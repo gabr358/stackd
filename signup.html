@@ -1,308 +1,744 @@
-{% extends "base.html" %}
-{% block title %}Specialist Dashboard — EquiSwap{% endblock %}
-{% block extra_head %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join Stackd</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-.opp-card{background:white;border-radius:18px;padding:26px;border:1px solid rgba(124,154,126,.12);margin-bottom:16px;transition:all .3s;}
-.opp-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(26,74,74,.12);border-color:rgba(124,154,126,.3);}
-.opp-founder{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.f-av{width:36px;height:36px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:13px;flex-shrink:0;}
-.f-nm{font-size:13px;font-weight:600;color:var(--teal);}
-.f-co{font-size:11px;color:var(--gray);}
-.opp-ttl{font-size:18px;font-weight:600;color:var(--teal);margin-bottom:8px;}
-.opp-desc{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:12px;font-weight:300;}
-.opp-foot{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--mist);}
-.opp-meta{display:flex;gap:18px;font-size:12px;color:var(--gray);}
-.opp-btns{display:flex;gap:8px;}
-.app-card{background:white;border-radius:18px;padding:22px;border:1px solid rgba(124,154,126,.12);margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start;}
-.app-post-ttl{font-size:15px;font-weight:600;color:var(--teal);margin-bottom:4px;}
-.app-post-co{font-size:12px;color:var(--gray);margin-bottom:10px;}
-.app-msg-prev{font-size:13px;color:var(--gray);font-weight:300;font-style:italic;line-height:1.5;}
-.search-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
-.s-input{flex:1;min-width:200px;padding:10px 16px;background:var(--mist);border:1.5px solid transparent;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;}
-.s-input:focus{border-color:var(--sage);background:white;}
-.f-btn{padding:10px 18px;background:var(--mist);border:1.5px solid transparent;border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--teal);cursor:pointer;transition:all .2s;font-weight:500;}
-.f-btn.act{background:var(--teal);color:white;border-color:var(--teal);}
-.profile-grid{display:grid;grid-template-columns:200px 1fr;gap:28px;}
-.p-av-big{width:80px;height:80px;background:linear-gradient(135deg,var(--sage),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:white;margin-bottom:16px;}
-@media(max-width:1000px){.profile-grid{grid-template-columns:1fr;}}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #0A0A0A;
+  --dark: #1C1C1C;
+  --mid: #6B6B6B;
+  --light: #B8B8B8;
+  --border: #E8E8E8;
+  --bg: #F7F7F5;
+  --white: #FFFFFF;
+  --green: #1A7A4A;
+  --green-soft: #EBF5EF;
+  --green-mid: #2EA865;
+  --err: #C0392B;
+  --err-bg: #FDF2F2;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--black);
+  min-height: 100vh;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: rgba(247,247,245,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  background: var(--black);
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+}
+
+.logo-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 19px;
+  color: var(--black);
+  letter-spacing: -0.3px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  font-size: 13px;
+  color: var(--mid);
+  text-decoration: none;
+  transition: color .2s;
+}
+.nav-link:hover { color: var(--black); }
+
+.btn-signin {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--black);
+  text-decoration: none;
+  padding: 7px 16px;
+  border: 1.5px solid rgba(10,10,10,0.2);
+  border-radius: 100px;
+  transition: all .2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-signin:hover {
+  border-color: var(--black);
+  background: var(--black);
+  color: white;
+}
+
+/* ── PAGE LAYOUT ── */
+.page {
+  min-height: 100vh;
+  padding: 96px 24px 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ── HEADER ── */
+.hd {
+  margin-bottom: 44px;
+  animation: up .55s .05s both;
+}
+
+.hd-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--green-mid);
+  margin-bottom: 16px;
+}
+
+.hd-tag::before {
+  content: '';
+  width: 16px;
+  height: 1.5px;
+  background: var(--green-mid);
+  border-radius: 2px;
+}
+
+.hd-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 44px;
+  line-height: 1.02;
+  letter-spacing: -1.8px;
+  color: var(--black);
+  margin-bottom: 12px;
+}
+
+.hd-title em {
+  font-style: italic;
+  color: var(--green);
+}
+
+.hd-sub {
+  font-size: 14px;
+  color: var(--mid);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.hd-sub a {
+  color: var(--black);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1px;
+  transition: border-color .2s;
+}
+.hd-sub a:hover { border-color: var(--black); }
+
+/* ── GOOGLE ── */
+.google-btn {
+  width: 100%;
+  padding: 13px 18px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--black);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .2s;
+  margin-bottom: 24px;
+  animation: up .55s .1s both;
+}
+
+.google-btn:hover {
+  border-color: rgba(10,10,10,0.3);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  transform: translateY(-1px);
+}
+
+/* ── DIVIDER ── */
+.or {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  animation: up .55s .12s both;
+}
+
+.or::before, .or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.or span {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--light);
+}
+
+/* ── ERROR ── */
+.err {
+  background: var(--err-bg);
+  border: 1.5px solid rgba(192,57,43,.15);
+  border-radius: 11px;
+  padding: 13px 15px;
+  font-size: 13px;
+  color: var(--err);
+  margin-bottom: 20px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  animation: up .4s both;
+}
+
+/* ── ROLE PICKER ── */
+.role-wrap {
+  margin-bottom: 28px;
+  animation: up .55s .15s both;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.role-card {
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 16px;
+  cursor: pointer;
+  background: var(--white);
+  text-align: left;
+  transition: all .22s;
+  position: relative;
+}
+
+.role-card:hover {
+  border-color: rgba(10,10,10,.25);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.role-card.active {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.r-icon { font-size: 22px; display: block; margin-bottom: 9px; }
+
+.r-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--black);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.r-desc {
+  font-size: 11px;
+  color: var(--mid);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+.r-check {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--green);
+  display: none;
+  place-items: center;
+}
+
+.r-check svg { width: 9px; height: 9px; }
+.role-card.active .r-check { display: grid; }
+
+/* ── FORM FIELDS ── */
+.form-anim { animation: up .55s .2s both; }
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field { margin-bottom: 12px; }
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 7px;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 11px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  color: var(--black);
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+  -webkit-appearance: none;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--light); }
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--black);
+  box-shadow: 0 0 0 3px rgba(10,10,10,.05);
+}
+
+.field input:valid:not(:placeholder-shown) { border-color: var(--green); }
+
+.field textarea { resize: vertical; min-height: 84px; line-height: 1.6; }
+
+/* Slide fields */
+.slide {
+  overflow: hidden;
+  transition: max-height .3s ease, opacity .25s ease, margin .3s ease;
+}
+.slide.hide { max-height: 0 !important; opacity: 0; pointer-events: none; margin-bottom: 0 !important; }
+.slide.show { max-height: 90px; opacity: 1; }
+
+/* Password bars */
+.pw-bars {
+  display: flex;
+  gap: 3px;
+  margin-top: 7px;
+}
+.pw-bar {
+  flex: 1; height: 2px; border-radius: 2px;
+  background: var(--border); overflow: hidden;
+}
+.pw-fill { height: 100%; width: 0; border-radius: 2px; transition: all .28s; }
+
+/* Upload */
+.upload {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--white);
+  border: 1.5px dashed var(--border);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all .2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.upload:hover { border-color: var(--black); color: var(--black); }
+.upload input { display: none; }
+.upload-ic {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--bg); display: grid; place-items: center;
+  font-size: 12px; flex-shrink: 0;
+}
+
+/* Section break */
+.break {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0 16px;
+}
+.break::before, .break::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.break span {
+  font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--light); white-space: nowrap;
+}
+
+/* Terms */
+.terms {
+  display: flex; align-items: flex-start; gap: 11px;
+  padding: 14px; background: var(--white);
+  border: 1.5px solid var(--border); border-radius: 11px;
+  margin-bottom: 20px; font-size: 13px; color: var(--mid); line-height: 1.6;
+}
+.terms input[type="checkbox"] {
+  width: 15px; height: 15px; accent-color: var(--black);
+  flex-shrink: 0; margin-top: 2px; cursor: pointer;
+}
+.terms a { color: var(--black); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--border); }
+.terms a:hover { border-color: var(--black); }
+
+/* Submit */
+.submit {
+  width: 100%;
+  padding: 15px;
+  background: var(--black);
+  color: white;
+  border: none;
+  border-radius: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all .25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.1px;
+}
+.submit:hover {
+  background: var(--dark);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+}
+.submit:active { transform: none; }
+.submit-ic {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(255,255,255,.14); display: grid;
+  place-items: center; font-size: 12px; transition: transform .25s;
+}
+.submit:hover .submit-ic { transform: translateX(3px); }
+
+/* ── MODAL ── */
+.modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,10,10,.5); backdrop-filter: blur(10px);
+  z-index: 999; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-bg.open { display: flex; }
+
+.modal {
+  background: white; border-radius: 18px;
+  max-width: 560px; width: 100%; max-height: 78vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 32px 72px rgba(0,0,0,.18);
+  animation: up .3s both;
+}
+.modal-top {
+  padding: 24px 24px 18px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+}
+.modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--black); letter-spacing: -.3px; }
+.modal-x {
+  width: 30px; height: 30px; border-radius: 50%; border: none;
+  background: var(--bg); color: var(--mid); font-size: 15px;
+  cursor: pointer; display: grid; place-items: center; transition: all .2s;
+}
+.modal-x:hover { background: var(--border); color: var(--black); }
+.modal-body {
+  padding: 22px 24px; overflow-y: auto;
+  font-size: 14px; color: var(--mid); line-height: 1.8;
+}
+.modal-body h3 {
+  font-size: 11px; font-weight: 700; color: var(--black);
+  margin: 18px 0 5px; text-transform: uppercase; letter-spacing: .8px;
+}
+.modal-body h3:first-child { margin-top: 0; }
+.modal-body p { margin-bottom: 6px; }
+.modal-body a { color: var(--green); }
+
+/* ── ANIMATIONS ── */
+@keyframes up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 540px) {
+  .topbar { padding: 0 18px; }
+  .hd-title { font-size: 34px; letter-spacing: -1.2px; }
+  .row2 { grid-template-columns: 1fr; }
+  .role-grid { grid-template-columns: 1fr; }
+  .page { padding: 84px 18px 60px; }
+}
 </style>
-{% endblock %}
+</head>
+<body>
 
-{% block body %}
-<div class="layout">
-  <nav class="sidebar">
-    <a href="/" class="sidebar-logo">Equi<span>Swap</span></a>
-    <div class="sidebar-nav">
-      <div class="nav-section">Overview</div>
-      <a class="nav-item active" onclick="showTab('overview',event)"><span class="nav-icon">🏠</span>Overview</a>
-      <div class="nav-section">Opportunities</div>
-      <a class="nav-item" onclick="showTab('browse',event)"><span class="nav-icon">🔍</span>Browse Posts <span class="nav-badge">{{ stats.open_posts }}</span></a>
-      <a class="nav-item" onclick="showTab('applications',event)"><span class="nav-icon">📨</span>My Applications <span class="nav-badge">{{ stats.my_applications }}</span></a>
-      <a class="nav-item" onclick="showTab('messages',event)"><span class="nav-icon">💬</span>Messages {% if stats.unread_messages > 0 %}<span class="nav-badge">{{ stats.unread_messages }}</span>{% endif %}</a>
-      <div class="nav-section">Account</div>
-      <a class="nav-item" onclick="showTab('profile',event)"><span class="nav-icon">👤</span>Profile</a>
-    </div>
-    <div class="sidebar-bottom">
-      <div class="user-info">
-        <div class="user-av">{{ user.name[0]|upper }}</div>
-        <div><div class="user-nm">{{ user.name }}</div><div class="user-rl">Specialist</div></div>
-      </div>
-      <a href="/logout" class="logout-btn">🚪 Sign Out</a>
-    </div>
-  </nav>
-
-  <div class="main">
-    <div class="topbar">
-      <div class="page-ttl" id="topbarTitle">Welcome back, {{ user.name.split()[0] }} 👋</div>
-      <div style="font-size:13px;color:var(--gray);" id="dt"></div>
-    </div>
-    <div class="content">
-
-      <!-- OVERVIEW -->
-      <div class="page-view active" id="page-overview">
-        <div class="metrics">
-          <div class="metric"><div class="metric-ico" style="background:rgba(124,154,126,.1);">🔍</div><div class="metric-val">{{ stats.open_posts }}</div><div class="metric-lbl">Open Posts</div></div>
-          <div class="metric"><div class="metric-ico" style="background:rgba(26,74,74,.08);">📨</div><div class="metric-val">{{ stats.my_applications }}</div><div class="metric-lbl">My Applications</div></div>
-          <div class="metric"><div class="metric-ico" style="background:rgba(61,139,139,.1);">✅</div><div class="metric-val">{{ stats.accepted }}</div><div class="metric-lbl">Accepted</div></div>
-          <div class="metric"><div class="metric-ico" style="background:rgba(168,197,170,.15);">💬</div><div class="metric-val">{{ stats.unread_messages }}</div><div class="metric-lbl">Unread Messages</div></div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
-          <div class="card">
-            <div class="card-hdr"><div class="card-ttl">Latest Opportunities</div><button class="btn btn-ghost btn-sm" onclick="showTab('browse',null)">Browse all →</button></div>
-            {% for p in open_posts[:4] %}
-            <div style="padding:14px 0;border-bottom:1px solid var(--mist);">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-                <div style="font-size:14px;font-weight:600;color:var(--teal);flex:1;padding-right:12px;">{{ p.title }}</div>
-                {% if p.id in applied_post_ids %}<span class="badge" style="background:rgba(61,139,139,.1);color:var(--teal-mid);">Applied</span>{% else %}<span class="badge badge-open">Open</span>{% endif %}
-              </div>
-              <div style="font-size:12px;color:var(--gray);">{{ p.founder_name }}{% if p.founder_company %} · {{ p.founder_company }}{% endif %}</div>
-              {% if p.skills_needed %}<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">{% for s in p.skills_needed[:4] %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>{% endif %}
-            </div>
-            {% else %}
-            <div class="empty"><div class="empty-icon">🔍</div><div class="empty-ttl">No open posts yet</div></div>
-            {% endfor %}
-          </div>
-          <div class="card">
-            <div class="card-hdr"><div class="card-ttl">My Status</div></div>
-            {% for a in my_applications[:5] %}
-            <div style="padding:12px 0;border-bottom:1px solid var(--mist);">
-              <div style="font-size:13px;font-weight:600;color:var(--teal);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ a.post_title }}</div>
-              <span class="badge badge-{{ a.status }}">{{ a.status }}</span>
-            </div>
-            {% else %}
-            <div class="empty" style="padding:30px 10px;"><div class="empty-icon" style="font-size:32px;">📨</div><div class="empty-ttl" style="font-size:14px;">No applications</div><div class="empty-sub">Browse posts and apply</div></div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-
-      <!-- BROWSE -->
-      <div class="page-view" id="page-browse">
-        <div class="card">
-          <div class="card-hdr"><div><div class="card-ttl">Browse Opportunities</div><div class="card-sub" id="browse-count">{{ open_posts|length }} open posts</div></div></div>
-          <div class="search-row">
-            <input class="s-input" placeholder="Search by title, skills, company..." id="search-input" oninput="filterBrowse()">
-          </div>
-          <div id="browse-list">
-            {% for p in open_posts %}
-            <div class="opp-card" data-title="{{ p.title|lower }}" data-skills="{{ p.skills_needed|join(' ')|lower if p.skills_needed else '' }}" data-founder="{{ p.founder_name|lower }} {{ p.founder_company|lower if p.founder_company else '' }}">
-              <div class="opp-founder">
-                <div class="f-av">{{ p.founder_name[0]|upper }}</div>
-                <div><div class="f-nm">{{ p.founder_name }}</div><div class="f-co">{{ p.founder_company or 'Startup' }}</div></div>
-                <div style="margin-left:auto;font-size:11px;color:var(--gray);">📅 {{ p.deadline }}</div>
-              </div>
-              <div class="opp-ttl">{{ p.title }}</div>
-              <div class="opp-desc">{{ p.description[:200] }}{% if p.description|length > 200 %}...{% endif %}</div>
-              {% if p.skills_needed %}<div class="skills-row" style="margin-bottom:14px;">{% for s in p.skills_needed %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>{% endif %}
-              <div class="opp-foot">
-                <div class="opp-meta"><span>{{ p.app_count }} applicants</span><span>Due {{ p.deadline }}</span></div>
-                <div class="opp-btns">
-                  <button class="btn btn-ghost btn-sm" onclick="askAiAboutPost('{{ p.title }}','{{ p.founder_name }}','{{ p.founder_company or '' }}','{{ p.skills_needed|join(', ') if p.skills_needed else '' }}')">🤖 Ask AI</button>
-                  {% if p.id in applied_post_ids %}
-                  <button class="btn btn-sm" style="background:rgba(61,139,139,.1);color:var(--teal-mid);" disabled>✓ Applied</button>
-                  {% else %}
-                  <button class="btn btn-primary btn-sm" onclick="openApplyModal({{ p.id }}, '{{ p.title|replace("'","\\'")|e }}', '{{ p.skills_needed|join(', ') if p.skills_needed else '' }}')">Apply Now</button>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            {% else %}
-            <div class="empty"><div class="empty-icon">🔍</div><div class="empty-ttl">No open posts</div><div class="empty-sub">Check back soon — founders are posting new opportunities</div></div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-
-      <!-- MY APPLICATIONS -->
-      <div class="page-view" id="page-applications">
-        <div class="card">
-          <div class="card-hdr"><div><div class="card-ttl">My Applications</div><div class="card-sub">{{ stats.my_applications }} total · {{ stats.accepted }} accepted · {{ stats.pending }} pending</div></div></div>
-          {% for a in my_applications %}
-          <div class="app-card">
-            <div>
-              <div class="app-post-ttl">{{ a.post_title }}</div>
-              <div class="app-post-co">{{ a.founder_name }}{% if a.founder_company %} · {{ a.founder_company }}{% endif %} · Due {{ a.post_deadline }}</div>
-              <div class="app-msg-prev">"{{ a.message[:140] }}{% if a.message|length > 140 %}...{% endif %}"</div>
-              {% if a.highlighted_skills %}<div class="skills-row" style="margin-top:10px;">{% for s in a.highlighted_skills %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>{% endif %}
-            </div>
-            <div style="text-align:right;">
-              <span class="badge badge-{{ a.status }}" style="display:block;text-align:center;margin-bottom:10px;">{{ a.status }}</span>
-              <div style="font-size:11px;color:var(--gray);margin-bottom:10px;">{{ a.created_at[:10] }}</div>
-              {% if a.status == 'accepted' %}<a href="/messages/{{ a.founder_id }}" class="btn btn-ghost btn-sm">💬 Message</a>{% endif %}
-              {% if a.status == 'pending' %}
-              <form method="POST" action="/specialist/withdraw/{{ a.id }}" onsubmit="return confirm('Withdraw this application?')" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm btn-xs">Withdraw</button>
-              </form>
-              {% endif %}
-            </div>
-          </div>
-          {% else %}
-          <div class="empty"><div class="empty-icon">📨</div><div class="empty-ttl">No applications yet</div><div class="empty-sub">Browse posts and click "Apply Now" to get started</div></div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- MESSAGES -->
-      <div class="page-view" id="page-messages">
-        <div class="card-ttl" style="margin-bottom:16px;">Messages</div>
-        {% if conversations %}
-        <div class="msg-layout">
-          <div class="msg-convs">
-            <div class="msg-conv-hdr">Conversations</div>
-            {% for c in conversations %}
-            <a href="/messages/{{ c.partner_id }}" style="text-decoration:none;">
-              <div class="conv-item">
-                <div class="conv-av">{{ c.partner_name[0]|upper }}</div>
-                <div style="flex:1;min-width:0;"><div class="conv-nm">{{ c.partner_name }}</div><div class="conv-prev">{{ c.last_message or '' }}</div></div>
-                {% if c.unread_count and c.unread_count > 0 %}<div class="unread-dot"></div>{% endif %}
-              </div>
-            </a>
-            {% endfor %}
-          </div>
-          <div style="display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:14px;font-weight:300;padding:40px;">Select a conversation to open it</div>
-        </div>
-        {% else %}
-        <div class="card"><div class="empty"><div class="empty-icon">💬</div><div class="empty-ttl">No conversations yet</div><div class="empty-sub">When a founder accepts your application, message them here</div></div></div>
-        {% endif %}
-      </div>
-
-      <!-- PROFILE -->
-      <div class="page-view" id="page-profile">
-        <div class="card">
-          <div class="card-ttl" style="margin-bottom:24px;">Profile Settings</div>
-          <form method="POST" action="/profile/update" enctype="multipart/form-data">
-            <div class="profile-grid">
-              <div>
-                <div class="p-av-big">{{ user.name[0]|upper }}</div>
-                <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--teal);">{{ user.name }}</div>
-                <div style="font-size:12px;color:var(--sage-dark);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;">Specialist</div>
-                <div style="font-size:12px;color:var(--gray);margin-top:6px;">{{ user.email }}</div>
-              </div>
-              <div>
-                <div class="form-group"><label class="form-group label">Full Name</label><input name="name" type="text" class="form-control" value="{{ user.name }}"></div>
-                <div class="form-group"><label class="form-group label">Skills (comma-separated)</label><input name="skills" type="text" class="form-control" value="{{ user.skills|join(', ') if user.skills else '' }}" placeholder="React, Node.js, UI Design..."></div>
-                <div class="form-group"><label class="form-group label">Bio / Portfolio Summary</label><textarea name="bio" class="form-control" style="min-height:100px;">{{ user.bio or '' }}</textarea></div>
-                <div class="form-group"><label class="form-group label">Update CV/Portfolio</label><input name="cv" type="file" class="form-control" style="padding:8px 16px;" accept=".pdf,.zip,.doc,.docx"></div>
-                <div class="form-group"><label class="form-group label">Update Profile Photo</label><input name="avatar" type="file" class="form-control" style="padding:8px 16px;" accept="image/*"></div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-
-    </div>
+<header class="topbar">
+  <a href="/" class="logo">
+    <div class="logo-mark">🌿</div>
+    <span class="logo-name">stackd</span>
+  </a>
+  <div class="topbar-right">
+    <a href="/" class="nav-link">← Home</a>
+    <a href="/login" class="btn-signin">Sign in</a>
   </div>
-</div>
+</header>
 
-<!-- APPLY MODAL -->
-<div class="modal-ov" id="applyModal">
-  <div class="modal">
-    <div class="modal-hdr"><div class="modal-ttl">Apply to Post</div><button class="modal-close" onclick="closeModal('applyModal')">✕</button></div>
-    <div id="apply-post-info" style="margin-bottom:22px;"></div>
-    <form method="POST" id="applyForm" action="" enctype="multipart/form-data">
-      <div class="form-group"><label class="form-group label">Your Application Message *</label><textarea name="message" class="form-control" placeholder="Tell the founder why you're the perfect fit. Mention relevant experience, similar projects, and your approach to this project..." required style="min-height:130px;"></textarea></div>
-      <div class="form-group"><label class="form-group label">Highlight Your Top Skills</label><input name="skills" type="text" class="form-control" id="apply-skills-input" placeholder="React, 5 years experience, UI Design..."></div>
-      <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;">Submit Application →</button>
+<main class="page">
+  <div class="card">
+
+    <div class="hd">
+      <div class="hd-tag">Create account</div>
+      <h1 class="hd-title">Start building<br><em>something real.</em></h1>
+      <p class="hd-sub">Free forever. No credit card. &nbsp;Already have an account? <a href="/login">Sign in →</a></p>
+    </div>
+
+    <a href="/auth/google" class="google-btn">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.013 17.64 11.705 17.64 9.2z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </a>
+
+    <div class="or"><span>or continue with email</span></div>
+
+    {% if error %}
+    <div class="err">⚠ {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/signup" enctype="multipart/form-data">
+
+      <!-- Role -->
+      <div class="role-wrap">
+        <span class="field-label">I'm joining as</span>
+        <div class="role-grid">
+          <button type="button" class="role-card {% if prefill_role == 'founder' %}active{% endif %}" id="btn-founder" onclick="setRole('founder')">
+            <span class="r-icon">🚀</span>
+            <span class="r-name">Founder</span>
+            <span class="r-desc">Building a startup, need a team</span>
+            <span class="r-check">
+              <svg viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2 2L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <button type="button" class="role-card {% if prefill_role == 'specialist' %}active{% endif %}" id="btn-specialist" onclick="setRole('specialist')">
+            <span class="r-icon">✦</span>
+            <span class="r-name">Specialist</span>
+            <span class="r-desc">Contributing skills to startups</span>
+            <span class="r-check">
+              <svg viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2 2L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+        </div>
+        <input type="hidden" name="role" id="roleInput" value="{{ prefill_role or 'founder' }}">
+      </div>
+
+      <!-- Fields -->
+      <div class="form-anim">
+        <div class="row2">
+          <div class="field">
+            <label>Full Name *</label>
+            <input type="text" name="name" placeholder="Jane Smith" required>
+          </div>
+          <div class="field">
+            <label>Email *</label>
+            <input type="email" name="email" placeholder="jane@example.com" required>
+          </div>
+        </div>
+
+        <div class="slide field {% if prefill_role == 'founder' %}show{% else %}hide{% endif %}" id="founder-field">
+          <label>Startup Name</label>
+          <input type="text" name="company" placeholder="Acme Inc.">
+        </div>
+
+        <div class="slide field {% if prefill_role == 'specialist' %}show{% else %}hide{% endif %}" id="spec-field">
+          <label>Your Skills</label>
+          <input type="text" name="skills" placeholder="React, Node.js, Design...">
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Password *</label>
+            <input type="password" name="password" id="pw" placeholder="Min. 6 characters" oninput="checkPw(this.value)" required>
+            <div class="pw-bars">
+              <div class="pw-bar"><div class="pw-fill" id="p1"></div></div>
+              <div class="pw-bar"><div class="pw-fill" id="p2"></div></div>
+              <div class="pw-bar"><div class="pw-fill" id="p3"></div></div>
+              <div class="pw-bar"><div class="pw-fill" id="p4"></div></div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Confirm Password *</label>
+            <input type="password" name="confirm_password" placeholder="Repeat password" required>
+          </div>
+        </div>
+
+        <div class="break"><span>Optional</span></div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Profile Photo</label>
+            <label class="upload">
+              <div class="upload-ic">📷</div>
+              <span id="photo-lbl">Upload image</span>
+              <input type="file" name="avatar" accept="image/*" onchange="setLbl(this,'photo-lbl')">
+            </label>
+          </div>
+          <div class="field">
+            <label id="cv-lbl-txt">CV / Portfolio</label>
+            <label class="upload">
+              <div class="upload-ic">📎</div>
+              <span id="cv-lbl">PDF, DOC, ZIP</span>
+              <input type="file" name="cv" accept=".pdf,.zip,.png,.jpg,.doc,.docx" onchange="setLbl(this,'cv-lbl')">
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>About You</label>
+          <textarea name="bio" placeholder="Quick intro — what you're building or what you bring to the table..."></textarea>
+        </div>
+
+        <div class="terms">
+          <input type="checkbox" name="terms" required>
+          <span>I agree to Stackd's <a href="#" onclick="openM('terms');return false;">Terms of Service</a> and <a href="#" onclick="openM('privacy');return false;">Privacy Policy</a>.</span>
+        </div>
+
+        <button type="submit" class="submit">
+          Create Account
+          <span class="submit-ic">→</span>
+        </button>
+      </div>
+
     </form>
   </div>
-</div>
-{% endblock %}
+</main>
 
-{% block ai_widget %}
-<button id="ai-toggle" title="EquiSwap AI Assistant">
-  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l4.94-1.38C8.42 21.5 10.15 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
-</button>
-<div id="ai-panel">
-  <div class="ai-header">
-    <div class="ai-avatar">🤖</div>
-    <div class="ai-header-text"><div class="ai-nm">EquiSwap AI</div><div class="ai-status">Your career assistant</div></div>
-    <div class="ai-header-btns">
-      <button class="ai-hbtn" onclick="clearAiChat()" title="Clear">🗑</button>
-      <button class="ai-hbtn" onclick="document.getElementById('ai-panel').classList.remove('open')">✕</button>
+<!-- MODAL -->
+<div class="modal-bg" id="mBg" onclick="if(event.target===this)closeM()">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-title" id="mTitle"></div>
+      <button class="modal-x" onclick="closeM()">✕</button>
     </div>
-  </div>
-  <div class="ai-messages" id="aiMessages">
-    <div class="ai-msg assistant">Hi {{ user.name.split()[0] }}! 👋 I'm your AI assistant. I know about all the open posts on EquiSwap and your applications. Ask me if a founder is worth working with, how to improve your pitch, or anything else!</div>
-  </div>
-  <div class="ai-suggestions">
-    <button class="ai-sug" onclick="sendAiSug(this)">Review my applications</button>
-    <button class="ai-sug" onclick="sendAiSug(this)">Is this founder serious?</button>
-    <button class="ai-sug" onclick="sendAiSug(this)">How to write a great pitch</button>
-  </div>
-  <div class="ai-input-row">
-    <input class="ai-input" id="aiInput" placeholder="Ask about founders, posts, your career..." onkeydown="if(event.key==='Enter')sendAiMsg()">
-    <button class="ai-send" onclick="sendAiMsg()">Send</button>
+    <div class="modal-body" id="mBody"></div>
   </div>
 </div>
+
 <script>
-document.getElementById('dt').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
-document.getElementById('ai-toggle').addEventListener('click',()=>document.getElementById('ai-panel').classList.toggle('open'));
+let role = '{{ prefill_role or "founder" }}';
 
-function filterBrowse(){
-  const q=document.getElementById('search-input').value.toLowerCase();
-  let vis=0;
-  document.querySelectorAll('.opp-card').forEach(c=>{
-    const match=!q||c.dataset.title.includes(q)||c.dataset.skills.includes(q)||c.dataset.founder.includes(q);
-    c.style.display=match?'':'none';
-    if(match)vis++;
+function setRole(r) {
+  role = r;
+  document.getElementById('roleInput').value = r;
+  ['founder','specialist'].forEach(id => {
+    document.getElementById('btn-' + id).classList.toggle('active', id === r);
   });
-  document.getElementById('browse-count').textContent=vis+' posts';
+  document.getElementById('founder-field').className = 'slide field ' + (r === 'founder' ? 'show' : 'hide');
+  document.getElementById('spec-field').className    = 'slide field ' + (r === 'specialist' ? 'show' : 'hide');
+  document.getElementById('cv-lbl-txt').textContent  = r === 'specialist' ? 'CV / Portfolio' : 'Company Deck';
 }
 
-function openApplyModal(pid,title,skills){
-  document.getElementById('applyForm').action='/specialist/apply/'+pid;
-  document.getElementById('apply-skills-input').value=skills;
-  document.getElementById('apply-post-info').innerHTML='<div style="background:var(--mist);padding:14px 16px;border-radius:12px;"><div style="font-size:14px;font-weight:600;color:var(--teal);">'+title+'</div></div>';
-  openModal('applyModal');
-}
-
-function askAiAboutPost(title,founderName,company,skills){
-  document.getElementById('aiInput').value='Is "'+title+'" by '+founderName+(company?' ('+company+')':'')+' a good opportunity for me? It requires: '+skills;
-  document.getElementById('ai-panel').classList.add('open');
-  sendAiMsg();
-}
-
-fetch('/api/ai/history').then(r=>r.json()).then(hist=>{
-  if(hist.length>1){
-    const box=document.getElementById('aiMessages');box.innerHTML='';
-    hist.forEach(m=>{const d=document.createElement('div');d.className='ai-msg '+m.role;d.innerHTML=formatAiMsg(m.content);box.appendChild(d);});
-    box.scrollTop=box.scrollHeight;
+function checkPw(v) {
+  let s = 0;
+  if (v.length >= 6) s++;
+  if (v.length >= 10) s++;
+  if (/[A-Z]/.test(v) || /[!@#$%^&*]/.test(v)) s++;
+  if (/[0-9]/.test(v)) s++;
+  const c = ['#C0392B','#E67E22','#F1C40F','#27AE60'];
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('p' + i);
+    el.style.width = i <= s ? '100%' : '0';
+    if (i <= s) el.style.background = c[s - 1];
   }
-});
-
-function formatAiMsg(txt){return txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/<li>/,'<ul><li>').replace(/(<\/li>)(?!<li>)/,'$1</ul>').replace(/\n/g,'<br>');}
-function addAiMsg(role,content){const box=document.getElementById('aiMessages');const d=document.createElement('div');d.className='ai-msg '+role;d.innerHTML=formatAiMsg(content);box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
-function sendAiMsg(){
-  const input=document.getElementById('aiInput');const msg=input.value.trim();if(!msg)return;input.value='';
-  addAiMsg('user',msg);document.getElementById('ai-panel').classList.add('open');
-  const t=addAiMsg('assistant','<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>');
-  fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})
-    .then(r=>r.json()).then(data=>{t.innerHTML=formatAiMsg(data.response||data.error||'Error');const box=document.getElementById('aiMessages');box.scrollTop=box.scrollHeight;})
-    .catch(()=>{t.innerHTML='Connection error.';});
 }
-function sendAiSug(btn){document.getElementById('aiInput').value=btn.textContent;document.getElementById('ai-panel').classList.add('open');sendAiMsg();}
-function clearAiChat(){fetch('/api/ai/clear',{method:'POST'}).then(()=>{document.getElementById('aiMessages').innerHTML='<div class="ai-msg assistant">Chat cleared! How can I help?</div>';});}
+
+function setLbl(input, id) {
+  if (input.files[0]) document.getElementById(id).textContent = '✓ ' + input.files[0].name;
+}
+
+const legal = {
+  terms: {
+    title: 'Terms of Service',
+    body: `<h3>1. Acceptance</h3><p>By creating an account on Stackd, you agree to these Terms. If you do not agree, do not use the platform.</p>
+    <h3>2. Eligibility</h3><p>You must be at least 18 years old to use Stackd.</p>
+    <h3>3. Account Responsibilities</h3><p>You are responsible for keeping your credentials secure and providing accurate information. You may not impersonate others.</p>
+    <h3>4. Acceptable Use</h3><p>You agree not to post spam, illegal content, or infringe on intellectual property. No harassment, deception, or fraud.</p>
+    <h3>5. Posts & Applications</h3><p>Founders are responsible for the accuracy of their posts. Specialists are responsible for their applications. Stackd does not guarantee any matches or collaborations.</p>
+    <h3>6. Intellectual Property</h3><p>Content you upload remains yours. By uploading, you grant Stackd a limited license to display it to relevant users.</p>
+    <h3>7. Termination</h3><p>We may suspend accounts that violate these terms. You may delete your account at any time from profile settings.</p>
+    <h3>8. Contact</h3><p>Questions? <a href="mailto:stackd.app7@gmail.com">stackd.app7@gmail.com</a></p>`
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    body: `<h3>1. What We Collect</h3><p>Name, email, profile photo, CV/portfolio files, bio, and skills. We also collect usage data like pages visited.</p>
+    <h3>2. How We Use It</h3><p>To operate the platform, match founders with specialists, send transactional emails, and power AI features.</p>
+    <h3>3. Profile Visibility</h3><p>Your name, role, bio, skills, and photo are visible to other users. Your email is never shown publicly.</p>
+    <h3>4. Data Storage</h3><p>All data is stored securely. We do not sell your data to third parties.</p>
+    <h3>5. AI Features</h3><p>When you use Shalaby AI, your messages are sent to our AI provider to generate responses and are not stored beyond the request.</p>
+    <h3>6. Your Rights</h3><p>You may update or delete your account at any time. Contact <a href="mailto:stackd.app7@gmail.com">stackd.app7@gmail.com</a> for full data deletion.</p>`
+  }
+};
+
+function openM(type) {
+  document.getElementById('mTitle').textContent = legal[type].title;
+  document.getElementById('mBody').innerHTML    = legal[type].body;
+  document.getElementById('mBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeM() {
+  document.getElementById('mBg').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeM(); });
 </script>
-{% endblock %}
+</body>
+</html>
