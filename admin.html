@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Admin Dashboard — EquiSwap{% endblock %}
+{% block title %}Admin Dashboard — Stackd{% endblock %}
 {% block extra_head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <style>
@@ -15,6 +15,10 @@
 .act-btn{background:none;border:1px solid rgba(224,112,112,.3);color:#C05050;font-size:11px;font-weight:500;font-family:'DM Sans',sans-serif;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s;}
 .act-btn:hover{background:rgba(224,112,112,.1);}
 @media(max-width:1100px){.charts-2col,.charts-eq,.data-2col{grid-template-columns:1fr;}}
+
+.logo-dot { color: #6DCFB5; }
+.sidebar-logo .logo-dot { color: #C8F0E8; }
+.f-logo .logo-dot { color: #6DCFB5; }
 </style>
 {% endblock %}
 
@@ -22,7 +26,7 @@
 <div class="layout">
   <!-- SIDEBAR -->
   <nav class="sidebar">
-    <a href="/" class="sidebar-logo">Equi<span>Swap</span> <span class="sidebar-badge">Admin</span></a>
+    <a href="/" class="sidebar-logo">stackd<span class="logo-dot">.</span> <span class="sidebar-badge">Admin</span></a>
     <div class="sidebar-nav">
       <div class="nav-section">Overview</div>
       <a class="nav-item active" onclick="showTab('analytics',event)"><span class="nav-icon">📊</span>Analytics</a>
@@ -72,7 +76,7 @@
             <table><thead><tr><th>User</th><th>Role</th><th>Joined</th></tr></thead><tbody>
               {% for u in users[:6] %}
               <tr>
-                <td><div class="user-cell"><div class="mini-av" style="background:linear-gradient(135deg,{{ '#2D6B6B,#3D8B8B' if u.role=='founder' else '#7C9A7E,#4A6B4C' }});">{{ u.name[0]|upper }}</div><div><div class="cell-nm">{{ u.name }}</div><div class="cell-sub">{{ u.email }}</div></div></div></td>
+                <td><div class="user-cell"><div class="mini-av" style="background:linear-gradient(135deg,{{ '#2A5244,#3A7D5E' if u.role=='founder' else '#6DCFB5,#3A7D5E' }});">{{ u.name[0]|upper }}</div><div><div class="cell-nm">{{ u.name }}</div><div class="cell-sub">{{ u.email }}</div></div></div></td>
                 <td><span class="badge badge-{{ u.role }}">{{ u.role }}</span></td>
                 <td style="color:var(--gray);font-size:12px;">{{ u.created_at[:10] }}</td>
               </tr>
@@ -110,7 +114,7 @@
             <tbody id="users-body">
               {% for u in users %}
               <tr data-role="{{ u.role }}">
-                <td><div class="user-cell"><div class="mini-av" style="background:linear-gradient(135deg,{{ '#2D6B6B,#3D8B8B' if u.role=='founder' else '#7C9A7E,#4A6B4C' }});">{{ u.name[0]|upper }}</div><div><div class="cell-nm">{{ u.name }}</div><div class="cell-sub">{{ u.email }}</div></div></div></td>
+                <td><div class="user-cell"><div class="mini-av" style="background:linear-gradient(135deg,{{ '#2A5244,#3A7D5E' if u.role=='founder' else '#6DCFB5,#3A7D5E' }});">{{ u.name[0]|upper }}</div><div><div class="cell-nm">{{ u.name }}</div><div class="cell-sub">{{ u.email }}</div></div></div></td>
                 <td><span class="badge badge-{{ u.role }}">{{ u.role }}</span></td>
                 <td style="font-size:12px;color:var(--gray);">{{ u.company or (u.skills|join(', ') if u.skills is iterable and u.skills is not string else u.skills) }}</td>
                 <td style="font-size:12px;color:var(--gray);">{{ u.created_at[:10] }}</td>
@@ -161,7 +165,7 @@
             <tbody>
               {% for a in applications %}
               <tr>
-                <td><div class="user-cell"><div class="mini-av" style="background:linear-gradient(135deg,#7C9A7E,#4A6B4C);">{{ a.specialist_name[0]|upper }}</div><div class="cell-nm">{{ a.specialist_name }}</div></div></td>
+                <td><div class="user-cell"><div class="mini-av" style="background:linear-gradient(135deg,#6DCFB5,#3A7D5E);">{{ a.specialist_name[0]|upper }}</div><div class="cell-nm">{{ a.specialist_name }}</div></div></td>
                 <td style="font-size:12px;color:var(--gray);max-width:180px;">{{ a.post_title }}</td>
                 <td style="font-size:12px;color:var(--gray);">{{ a.founder_name }}</td>
                 <td><span class="badge badge-{{ a.status }}">{{ a.status }}</span></td>
@@ -183,9 +187,9 @@
         <div class="card" style="max-width:500px;">
           <div class="card-ttl" style="margin-bottom:8px;">Platform Settings</div>
           <div class="card-sub" style="margin-bottom:28px;">System-wide configuration</div>
-          <div class="f-group" style="margin-bottom:18px;"><label style="display:block;font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Admin Email</label><input type="email" value="admin@gmail.com" class="form-control" disabled style="width:100%;padding:13px 16px;background:var(--mist);border:1.5px solid transparent;border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--dark);outline:none;opacity:.7;"></div>
+          <div class="f-group" style="margin-bottom:18px;"><label style="display:block;font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Admin Email</label><input type="email" value="stackd.app7@gmail.com" class="form-control" disabled style="width:100%;padding:13px 16px;background:var(--mist);border:1.5px solid transparent;border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--dark);outline:none;opacity:.7;"></div>
           <div style="font-size:13px;color:var(--gray);line-height:1.8;">
-            <strong style="color:var(--teal);">Database:</strong> SQLite (equiswap.db)<br>
+            <strong style="color:var(--teal);">Database:</strong> SQLite (stackd.db)<br>
             <strong style="color:var(--teal);">AI Model:</strong> Claude claude-sonnet-4-5 (requires ANTHROPIC_API_KEY env)<br>
             <strong style="color:var(--teal);">Flask Version:</strong> 3.1.2
           </div>
@@ -204,14 +208,14 @@ document.getElementById('dt').textContent=new Date().toLocaleDateString('en-US',
 const labels = {{ chart_labels|safe }};
 const usersData = {{ chart_users|safe }};
 const postsData = {{ chart_posts|safe }};
-const opts={responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(124,154,126,.08)'},ticks:{font:{family:'DM Sans',size:11},color:'#9BA89C'}},y:{grid:{color:'rgba(124,154,126,.08)'},ticks:{font:{family:'DM Sans',size:11},color:'#9BA89C'}}}};
+const opts={responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(124,154,126,.08)'},ticks:{font:{family:'DM Sans',size:11},color:'#7A9E92'}},y:{grid:{color:'rgba(124,154,126,.08)'},ticks:{font:{family:'DM Sans',size:11},color:'#7A9E92'}}}};
 
 new Chart(document.getElementById('actChart'),{type:'line',data:{labels,datasets:[
-  {label:'Users',data:usersData,borderColor:'#1A4A4A',backgroundColor:'rgba(26,74,74,.05)',borderWidth:2,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#1A4A4A'},
-  {label:'Posts',data:postsData,borderColor:'#7C9A7E',backgroundColor:'rgba(124,154,126,.05)',borderWidth:2,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#7C9A7E'}
-]},options:{...opts,plugins:{legend:{display:true,position:'top',labels:{font:{family:'DM Sans',size:12},color:'#1A4A4A',usePointStyle:true,padding:20}}}}});
+  {label:'Users',data:usersData,borderColor:'#1E3A2E',backgroundColor:'rgba(26,74,74,.05)',borderWidth:2,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#1E3A2E'},
+  {label:'Posts',data:postsData,borderColor:'#6DCFB5',backgroundColor:'rgba(124,154,126,.05)',borderWidth:2,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#6DCFB5'}
+]},options:{...opts,plugins:{legend:{display:true,position:'top',labels:{font:{family:'DM Sans',size:12},color:'#1E3A2E',usePointStyle:true,padding:20}}}}});
 
-new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:['Founders','Specialists'],datasets:[{data:[{{ stats.founders }},{{ stats.specialists }}],backgroundColor:['#1A4A4A','#7C9A7E'],borderWidth:0,spacing:4,borderRadius:6}]},options:{responsive:true,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:12},color:'#1A4A4A',usePointStyle:true,padding:20}}}}});
+new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:['Founders','Specialists'],datasets:[{data:[{{ stats.founders }},{{ stats.specialists }}],backgroundColor:['#1E3A2E','#6DCFB5'],borderWidth:0,spacing:4,borderRadius:6}]},options:{responsive:true,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:12},color:'#1E3A2E',usePointStyle:true,padding:20}}}}});
 
 new Chart(document.getElementById('appChart'),{type:'bar',data:{labels:['Pending','Accepted','Rejected'],datasets:[{data:[{{ stats.pending_apps }},{{ stats.accepted_apps }},{{ stats.total_applications - stats.pending_apps - stats.accepted_apps }}],backgroundColor:['rgba(224,168,112,.7)','rgba(124,154,126,.7)','rgba(224,112,112,.7)'],borderRadius:8,borderSkipped:false}]},options:opts});
 
