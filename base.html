@@ -1,340 +1,584 @@
-{% extends "base.html" %}
-{% block title %}Founder Dashboard — EquiSwap{% endblock %}
-{% block extra_head %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Stackd{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+{% block extra_head %}{% endblock %}
 <style>
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
-.post-card{background:white;border-radius:18px;padding:24px;border:1px solid rgba(124,154,126,.12);margin-bottom:14px;transition:all .25s;}
-.post-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(26,74,74,.1);}
-.post-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.post-ttl{font-size:16px;font-weight:600;color:var(--teal);}
-.post-meta{display:flex;gap:16px;font-size:12px;color:var(--gray);margin-top:4px;flex-wrap:wrap;}
-.post-desc{font-size:13px;color:var(--gray);line-height:1.6;margin:10px 0;font-weight:300;}
-.skills-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
-.post-acts{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--mist);}
-.app-card{background:white;border-radius:18px;padding:22px;border:1px solid rgba(124,154,126,.12);margin-bottom:12px;transition:all .25s;}
-.app-card:hover{box-shadow:0 6px 24px rgba(26,74,74,.08);}
-.app-hdr{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-.app-av{width:44px;height:44px;background:linear-gradient(135deg,var(--sage),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:16px;font-family:'Cormorant Garamond',serif;flex-shrink:0;}
-.app-nm{font-size:15px;font-weight:600;color:var(--teal);}
-.app-post{font-size:12px;color:var(--gray);margin-top:2px;}
-.app-msg{font-size:13px;color:var(--dark);line-height:1.6;background:var(--mist);padding:13px 16px;border-radius:12px;margin-bottom:12px;font-weight:300;}
-.app-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.profile-grid{display:grid;grid-template-columns:200px 1fr;gap:28px;}
-.p-av-big{width:80px;height:80px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:white;margin-bottom:16px;}
-.p-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--teal);}
-.p-role{font-size:12px;color:var(--sage-dark);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
-@media(max-width:1000px){.two-col{grid-template-columns:1fr;}.profile-grid{grid-template-columns:1fr;}}
+:root {
+  --sage: #6DCFB5; --sage-light: #C8F0E8; --sage-dark: #3A7D5E;
+  --teal: #1E3A2E; --teal-mid: #2A5244; --teal-light: #3A7D5E;
+  --white: #F5FFFC; --mist: #E8FAF4; --gray: #7A9E92;
+  --dark: #0A1F17; --sidebar-w: 268px;
+  --error: #E07070; --success: #70C070;
+  --gold: #C4A855; --gold-light: #E8D89A;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--dark);overflow-x:hidden;}
+
+/* ── FLASH ── */
+.flash-container{position:fixed;top:20px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.flash{padding:14px 22px;border-radius:14px;font-size:13px;font-weight:500;animation:flash-in 0.4s cubic-bezier(.34,1.56,.64,1);max-width:340px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+.flash-error{background:white;border-left:3px solid var(--error);color:#c05050;}
+.flash-success{background:white;border-left:3px solid var(--success);color:#3a8a3a;}
+@keyframes flash-in{from{transform:translateX(40px) scale(0.9);opacity:0;}to{transform:translateX(0) scale(1);opacity:1;}}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:var(--teal);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:50;overflow-y:auto;transition:transform 0.3s ease;}
+.sidebar::before{content:'';position:absolute;top:0;right:0;bottom:0;left:0;background:linear-gradient(180deg,rgba(61,139,139,0.15) 0%,transparent 40%);pointer-events:none;}
+.sidebar-logo{padding:26px 26px 22px;font-family:'Syne',sans-serif;font-size:24px;font-weight:600;color:white;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;display:flex;align-items:center;gap:10px;position:relative;}
+.sidebar-logo span{color:var(--sage-light);}
+.logo-gem{width:32px;height:32px;background:linear-gradient(135deg,var(--sage-light),var(--teal-light));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.sidebar-nav{padding:18px 14px;flex:1;}
+.nav-section{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.28);font-weight:600;padding:0 12px;margin-bottom:6px;margin-top:20px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;color:rgba(255,255,255,0.6);font-size:13.5px;font-weight:400;cursor:pointer;transition:all 0.2s;text-decoration:none;margin-bottom:2px;position:relative;}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9);}
+.nav-item.active{background:rgba(255,255,255,0.12);color:white;font-weight:500;}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:22px;background:var(--sage-light);border-radius:0 3px 3px 0;}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--sage);color:white;font-size:10px;font-weight:600;padding:2px 8px;border-radius:50px;min-width:20px;text-align:center;}
+.nav-badge.alert{background:#E07070;}
+.sidebar-bottom{padding:14px;border-top:1px solid rgba(255,255,255,0.08);}
+.user-info{display:flex;align-items:center;gap:10px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,0.07);margin-bottom:8px;}
+.user-av{width:38px;height:38px;background:linear-gradient(135deg,var(--sage),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:15px;font-family:'Syne',sans-serif;overflow:hidden;flex-shrink:0;}
+.user-av img{width:100%;height:100%;object-fit:cover;}
+.user-nm{font-size:13px;color:white;font-weight:500;line-height:1.2;}
+.user-rl{font-size:10px;color:rgba(255,255,255,0.38);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+.logout-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:9px;border-radius:10px;color:rgba(255,255,255,0.4);font-size:12px;cursor:pointer;transition:all 0.2s;background:none;border:none;font-family:'DM Sans',sans-serif;letter-spacing:0.3px;}
+.logout-btn:hover{color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.06);}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:rgba(248,249,246,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(124,154,126,0.12);padding:16px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.page-ttl{font-family:'Syne',sans-serif;font-size:24px;font-weight:400;color:var(--teal);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.content{padding:32px 36px;animation:content-in 0.5s ease;}
+@keyframes content-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── CARDS ── */
+.card{background:white;border-radius:22px;padding:28px;border:1px solid rgba(124,154,126,0.1);box-shadow:0 2px 20px rgba(26,74,74,0.04);margin-bottom:20px;transition:box-shadow 0.3s;}
+.card:hover{box-shadow:0 4px 30px rgba(26,74,74,0.08);}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.card-ttl{font-size:16px;font-weight:600;color:var(--teal);}
+.card-sub{font-size:12px;color:var(--gray);margin-top:3px;font-weight:300;}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px;}
+.metric{background:white;border-radius:20px;padding:24px;border:1px solid rgba(124,154,126,0.1);box-shadow:0 2px 16px rgba(26,74,74,0.04);transition:all 0.3s;cursor:default;position:relative;overflow:hidden;}
+.metric::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(124,154,126,0.08) 0%,transparent 70%);border-radius:50%;}
+.metric:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(26,74,74,0.1);}
+.metric-ico{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;}
+.metric-val{font-family:'Syne',sans-serif;font-size:42px;font-weight:600;color:var(--teal);line-height:1;}
+.metric-lbl{font-size:12px;color:var(--gray);margin-top:6px;font-weight:400;}
+.metric-trend{font-size:11px;margin-top:4px;color:var(--sage-dark);}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:3px 11px;border-radius:50px;font-size:11px;font-weight:600;letter-spacing:0.2px;}
+.badge-open{background:rgba(124,154,126,0.15);color:var(--sage-dark);}
+.badge-closed{background:rgba(155,168,156,0.12);color:var(--gray);}
+.badge-pending{background:rgba(224,168,112,0.15);color:#A06030;}
+.badge-accepted{background:rgba(112,192,112,0.15);color:#2A7A2A;}
+.badge-rejected{background:rgba(224,112,112,0.1);color:#C05050;}
+.badge-founder{background:rgba(26,74,74,0.1);color:var(--teal);}
+.badge-specialist{background:rgba(124,154,126,0.15);color:var(--sage-dark);}
+.badge-admin{background:rgba(196,168,85,0.15);color:#8A6020;}
+
+/* ── BUTTONS ── */
+.btn{padding:10px 22px;border-radius:50px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.25s;border:none;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--teal);color:white;box-shadow:0 4px 16px rgba(26,74,74,0.22);}
+.btn-primary:hover{background:var(--teal-mid);transform:translateY(-1px);box-shadow:0 6px 22px rgba(26,74,74,0.32);}
+.btn-sage{background:var(--sage);color:white;}
+.btn-sage:hover{background:var(--sage-dark);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--teal);border:1.5px solid rgba(26,74,74,0.18);}
+.btn-ghost:hover{border-color:var(--sage);color:var(--sage-dark);background:rgba(124,154,126,0.05);}
+.btn-danger{background:transparent;color:#C05050;border:1.5px solid rgba(224,112,112,0.25);}
+.btn-danger:hover{background:rgba(224,112,112,0.08);border-color:rgba(224,112,112,0.4);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#A88830);color:white;}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(196,168,85,0.35);}
+.btn-sm{padding:7px 16px;font-size:12px;}
+.btn-xs{padding:4px 12px;font-size:11px;}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:20px;}
+.form-group label,.form-label{display:block;font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.form-control{width:100%;padding:13px 16px;background:var(--mist);border:1.5px solid transparent;border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--dark);transition:all 0.2s;outline:none;}
+.form-control:focus{border-color:var(--sage);background:white;box-shadow:0 0 0 3px rgba(124,154,126,0.1);}
+textarea.form-control{resize:vertical;min-height:90px;}
+
+/* ── TABLES ── */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);font-weight:600;padding:0 0 14px;text-align:left;border-bottom:1px solid var(--mist);}
+td{padding:14px 0;font-size:13px;color:var(--dark);border-bottom:1px solid rgba(124,154,126,0.07);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(237,240,236,0.4);}
+.user-cell{display:flex;align-items:center;gap:10px;}
+.mini-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:12px;font-family:'Syne',sans-serif;flex-shrink:0;}
+.cell-nm{font-weight:500;font-size:13px;}
+.cell-sub{font-size:11px;color:var(--gray);margin-top:1px;}
+.skill-tag{padding:3px 10px;background:rgba(124,154,126,0.1);border-radius:50px;font-size:11px;color:var(--sage-dark);font-weight:500;display:inline-block;margin:2px;}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:64px 20px;color:var(--gray);}
+.empty-icon{font-size:52px;margin-bottom:18px;opacity:0.4;filter:grayscale(30%);}
+.empty-ttl{font-size:17px;font-weight:600;color:var(--teal);margin-bottom:8px;font-family:'Syne',sans-serif;}
+.empty-sub{font-size:13px;font-weight:300;line-height:1.6;max-width:260px;margin:0 auto;}
+
+/* ── MODALS ── */
+.modal-ov{position:fixed;inset:0;background:rgba(15,31,31,0.6);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.modal-ov.open{display:flex;}
+.modal{background:white;border-radius:26px;padding:40px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;animation:modal-in 0.35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes modal-in{from{transform:translateY(30px) scale(0.96);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+.modal-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.modal-ttl{font-family:'Syne',sans-serif;font-size:30px;font-weight:400;color:var(--teal);}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray);line-height:1;padding:4px;transition:color 0.2s;}
+.modal-close:hover{color:var(--teal);}
+
+/* ── PAGE TABS ── */
+.page-view{display:none;animation:tab-in 0.35s ease;}
+.page-view.active{display:block;}
+@keyframes tab-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── MESSAGING ── */
+.msg-layout{display:grid;grid-template-columns:280px 1fr;min-height:540px;background:white;border-radius:22px;overflow:hidden;border:1px solid rgba(124,154,126,0.1);box-shadow:0 2px 20px rgba(26,74,74,0.06);}
+.msg-convs{border-right:1px solid var(--mist);overflow-y:auto;background:var(--white);}
+.msg-conv-hdr{padding:18px 20px;border-bottom:1px solid var(--mist);font-size:13px;font-weight:600;color:var(--teal);letter-spacing:0.2px;background:white;}
+.conv-item{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;transition:background 0.2s;border-bottom:1px solid rgba(237,240,236,0.8);}
+.conv-item:hover,.conv-item.active{background:var(--mist);}
+.conv-av{width:40px;height:40px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:14px;flex-shrink:0;}
+.conv-nm{font-size:13px;font-weight:600;color:var(--teal);}
+.conv-prev{font-size:11px;color:var(--gray);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}
+.unread-dot{width:8px;height:8px;background:var(--sage);border-radius:50%;margin-left:auto;flex-shrink:0;animation:pulse-dot 2s infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.msg-chat{display:flex;flex-direction:column;}
+.msg-chat-hdr{padding:18px 24px;border-bottom:1px solid var(--mist);display:flex;align-items:center;gap:12px;background:white;}
+.msg-bubbles{flex:1;padding:20px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;min-height:320px;max-height:400px;}
+.bubble{max-width:70%;padding:12px 16px;border-radius:20px;font-size:13px;line-height:1.55;}
+.bubble-sent{background:var(--teal);color:white;align-self:flex-end;border-bottom-right-radius:4px;}
+.bubble-recv{background:var(--mist);color:var(--dark);align-self:flex-start;border-bottom-left-radius:4px;}
+.bubble-time{font-size:10px;margin-top:3px;opacity:0.5;}
+.msg-input-row{padding:14px 18px;border-top:1px solid var(--mist);display:flex;gap:8px;background:white;}
+.msg-input{flex:1;padding:11px 18px;background:var(--mist);border:1.5px solid transparent;border-radius:50px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.2s;}
+.msg-input:focus{border-color:var(--sage);background:white;}
+.msg-send{padding:11px 22px;background:var(--teal);color:white;border:none;border-radius:50px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.msg-send:hover{background:var(--teal-mid);}
+
+/* ─────────────────────────────────────────────
+   SHALABY AI WIDGET — PREMIUM DESIGN
+   ───────────────────────────────────────────── */
+#shalaby-toggle{
+  position:fixed;bottom:30px;right:30px;
+  width:60px;height:60px;
+  background:linear-gradient(135deg,var(--teal) 0%,var(--teal-light) 100%);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:300;
+  box-shadow:0 8px 32px rgba(26,74,74,0.45),0 0 0 0 rgba(61,139,139,0.4);
+  transition:all 0.3s;border:none;
+  animation:shalaby-pulse 3s ease-in-out infinite;
+}
+@keyframes shalaby-pulse{
+  0%,100%{box-shadow:0 8px 32px rgba(26,74,74,0.45),0 0 0 0 rgba(61,139,139,0.4);}
+  50%{box-shadow:0 8px 32px rgba(26,74,74,0.45),0 0 0 12px rgba(61,139,139,0);}
+}
+#shalaby-toggle:hover{transform:scale(1.1) rotate(-5deg);}
+#shalaby-toggle.active{animation:none;box-shadow:0 8px 32px rgba(26,74,74,0.45);}
+.shalaby-icon{font-size:26px;transition:transform 0.3s;}
+#shalaby-toggle.active .shalaby-icon{transform:rotate(90deg);}
+
+#shalaby-panel{
+  position:fixed;bottom:104px;right:30px;
+  width:400px;
+  background:white;
+  border-radius:28px;
+  box-shadow:0 24px 80px rgba(26,74,74,0.22),0 0 0 1px rgba(124,154,126,0.12);
+  z-index:300;
+  display:none;flex-direction:column;
+  max-height:580px;
+  overflow:hidden;
+  transform-origin:bottom right;
+}
+#shalaby-panel.open{
+  display:flex;
+  animation:shalaby-open 0.4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes shalaby-open{
+  from{transform:scale(0.7) translateY(30px);opacity:0;}
+  to{transform:scale(1) translateY(0);opacity:1;}
+}
+
+/* Shalaby Header */
+.shalaby-hdr{
+  padding:20px 22px;
+  background:linear-gradient(135deg,var(--teal) 0%,var(--teal-mid) 100%);
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.shalaby-hdr::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:100px;height:100px;
+  background:radial-gradient(circle,rgba(168,197,170,0.25) 0%,transparent 70%);
+  border-radius:50%;
+}
+.shalaby-hdr::after{
+  content:'';position:absolute;bottom:-20px;left:20px;
+  width:60px;height:60px;
+  background:radial-gradient(circle,rgba(61,139,139,0.3) 0%,transparent 70%);
+  border-radius:50%;
+}
+.shalaby-avatar{
+  width:46px;height:46px;
+  background:linear-gradient(135deg,var(--sage-light),var(--teal-light));
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);
+  flex-shrink:0;
+  position:relative;z-index:1;
+  animation:shalaby-float 4s ease-in-out infinite;
+}
+@keyframes shalaby-float{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  50%{transform:translateY(-3px) rotate(3deg);}
+}
+.shalaby-hdr-text{flex:1;position:relative;z-index:1;}
+.shalaby-name{font-size:17px;font-weight:600;color:white;font-family:'Syne',sans-serif;letter-spacing:0.3px;}
+.shalaby-tagline{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;}
+.shalaby-status{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,0.5);margin-top:4px;}
+.shalaby-dot{width:6px;height:6px;background:#70C070;border-radius:50%;animation:shalaby-blink 2s infinite;}
+@keyframes shalaby-blink{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.shalaby-hdr-btns{display:flex;gap:6px;position:relative;z-index:1;}
+.shalaby-hbtn{background:rgba(255,255,255,0.12);border:none;color:rgba(255,255,255,0.7);font-size:13px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+.shalaby-hbtn:hover{background:rgba(255,255,255,0.2);color:white;}
+
+/* Shalaby Messages */
+.shalaby-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;min-height:220px;background:var(--white);}
+.shalaby-msgs::-webkit-scrollbar{width:4px;}
+.shalaby-msgs::-webkit-scrollbar-track{background:transparent;}
+.shalaby-msgs::-webkit-scrollbar-thumb{background:rgba(124,154,126,0.3);border-radius:4px;}
+
+.s-msg{max-width:86%;display:flex;flex-direction:column;}
+.s-msg.user{align-self:flex-end;}
+.s-msg.assistant{align-self:flex-start;}
+.s-bubble{padding:11px 15px;border-radius:18px;font-size:13px;line-height:1.6;}
+.s-msg.user .s-bubble{background:var(--teal);color:white;border-bottom-right-radius:5px;}
+.s-msg.assistant .s-bubble{background:white;color:var(--dark);border-bottom-left-radius:5px;box-shadow:0 2px 12px rgba(26,74,74,0.08);border:1px solid rgba(124,154,126,0.1);}
+.s-bubble strong{font-weight:600;}
+.s-bubble ul{padding-left:16px;margin:4px 0;}
+.s-bubble li{margin:3px 0;}
+.s-bubble code{background:rgba(124,154,126,0.1);padding:1px 6px;border-radius:4px;font-size:12px;}
+.s-time{font-size:10px;color:var(--gray);margin-top:4px;padding:0 4px;}
+.s-msg.user .s-time{text-align:right;}
+
+/* Shalaby Suggestions */
+.shalaby-sugs{padding:10px 16px;display:flex;gap:6px;flex-wrap:wrap;background:white;border-top:1px solid var(--mist);}
+.s-sug{padding:6px 13px;background:var(--mist);border-radius:50px;font-size:11px;color:var(--sage-dark);font-weight:500;cursor:pointer;border:1px solid rgba(124,154,126,0.15);font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.s-sug:hover{background:var(--sage);color:white;border-color:var(--sage);}
+
+/* Shalaby Input */
+.shalaby-input-row{padding:14px 16px;border-top:1px solid var(--mist);display:flex;gap:8px;background:white;}
+.shalaby-input{flex:1;padding:11px 16px;background:var(--mist);border:1.5px solid transparent;border-radius:50px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.2s;}
+.shalaby-input:focus{border-color:var(--sage);background:white;box-shadow:0 0 0 3px rgba(124,154,126,0.08);}
+.shalaby-send{padding:11px 18px;background:var(--teal);color:white;border:none;border-radius:50px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
+.shalaby-send:hover{background:var(--teal-mid);}
+
+/* Thinking */
+.s-thinking{display:flex;gap:5px;align-items:center;padding:11px 15px;}
+.s-dot{width:7px;height:7px;background:var(--sage);border-radius:50%;animation:s-bounce 1.4s ease infinite;}
+.s-dot:nth-child(2){animation-delay:0.16s;}
+.s-dot:nth-child(3){animation-delay:0.32s;}
+@keyframes s-bounce{0%,80%,100%{transform:translateY(0);opacity:0.4;}40%{transform:translateY(-8px);opacity:1;}}
+
+/* ── ENTRANCE ANIMATION OVERLAY ── */
+.ai-entrance{
+  position:fixed;inset:0;z-index:9998;
+  pointer-events:none;
+  display:flex;align-items:flex-end;justify-content:flex-end;
+  padding:30px;
+}
+.ai-entrance-bubble{
+  background:white;
+  border-radius:20px 20px 4px 20px;
+  padding:16px 22px;
+  box-shadow:0 12px 48px rgba(26,74,74,0.2);
+  border:1px solid rgba(124,154,126,0.15);
+  font-size:14px;color:var(--teal);font-weight:500;
+  max-width:280px;
+  opacity:0;
+  transform:scale(0.8) translateY(20px);
+  transform-origin:bottom right;
+  animation:entrance-bubble 0.5s cubic-bezier(.34,1.56,.64,1) 0.8s forwards, entrance-hide 0.4s ease 4.5s forwards;
+  pointer-events:none;
+}
+.ai-entrance-bubble span{display:block;font-size:12px;color:var(--gray);margin-top:4px;font-weight:300;}
+@keyframes entrance-bubble{
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+@keyframes entrance-hide{
+  to{opacity:0;transform:scale(0.9) translateY(10px);}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .metrics{grid-template-columns:repeat(2,1fr);}
+  .msg-layout{grid-template-columns:1fr;}
+  #shalaby-panel{width:350px;right:16px;}
+  #shalaby-toggle{right:16px;bottom:16px;}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .main{margin-left:0;}
+  .content{padding:20px 16px;}
+  .topbar{padding:14px 20px;}
+  #shalaby-panel{width:calc(100vw - 32px);right:16px;}
+}
+
+.logo-dot { color: #6DCFB5; }
+.sidebar-logo .logo-dot { color: #C8F0E8; }
+.f-logo .logo-dot { color: #6DCFB5; }
 </style>
-{% endblock %}
+</head>
+<body>
 
-{% block body %}
-<div class="layout">
-  <nav class="sidebar">
-    <a href="/" class="sidebar-logo">Equi<span>Swap</span></a>
-    <div class="sidebar-nav">
-      <div class="nav-section">Overview</div>
-      <a class="nav-item active" onclick="showTab('overview',event)"><span class="nav-icon">🏠</span>Overview</a>
-      <div class="nav-section">My Work</div>
-      <a class="nav-item" onclick="showTab('posts',event)"><span class="nav-icon">📋</span>My Posts <span class="nav-badge">{{ stats.total_posts }}</span></a>
-      <a class="nav-item" onclick="showTab('applications',event)"><span class="nav-icon">📨</span>Applications <span class="nav-badge">{{ stats.pending_applications }}</span></a>
-      <a class="nav-item" onclick="showTab('messages',event)"><span class="nav-icon">💬</span>Messages {% if stats.unread_messages > 0 %}<span class="nav-badge">{{ stats.unread_messages }}</span>{% endif %}</a>
-      <div class="nav-section">Account</div>
-      <a class="nav-item" onclick="showTab('profile',event)"><span class="nav-icon">👤</span>Profile</a>
-    </div>
-    <div class="sidebar-bottom">
-      <div class="user-info">
-        <div class="user-av">{{ user.name[0]|upper }}</div>
-        <div><div class="user-nm">{{ user.name }}</div><div class="user-rl">Founder{% if user.company %} · {{ user.company }}{% endif %}</div></div>
-      </div>
-      <a href="/logout" class="logout-btn">🚪 Sign Out</a>
-    </div>
-  </nav>
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-container">
+  {% for cat, msg in messages %}
+  <div class="flash flash-{{ cat }}">
+    {% if cat == 'success' %}✓{% else %}⚠{% endif %} {{ msg }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
 
-  <div class="main">
-    <div class="topbar">
-      <div class="page-ttl" id="topbarTitle">Welcome back, {{ user.name.split()[0] }} 👋</div>
-      <button class="btn btn-primary" onclick="openModal('newPostModal')">+ New Post</button>
-    </div>
-    <div class="content">
+{% block body %}{% endblock %}
 
-      <!-- OVERVIEW -->
-      <div class="page-view active" id="page-overview">
-        <div class="metrics">
-          <div class="metric"><div class="metric-ico" style="background:rgba(26,74,74,.08);">📋</div><div class="metric-val">{{ stats.total_posts }}</div><div class="metric-lbl">Total Posts</div></div>
-          <div class="metric"><div class="metric-ico" style="background:rgba(124,154,126,.1);">📨</div><div class="metric-val">{{ stats.total_applications }}</div><div class="metric-lbl">Applications</div></div>
-          <div class="metric"><div class="metric-ico" style="background:rgba(61,139,139,.1);">✅</div><div class="metric-val">{{ stats.accepted_applications }}</div><div class="metric-lbl">Accepted</div></div>
-          <div class="metric"><div class="metric-ico" style="background:rgba(168,197,170,.15);">💬</div><div class="metric-val">{{ stats.unread_messages }}</div><div class="metric-lbl">Unread Messages</div></div>
-        </div>
+<!-- ═══════════════════════════════════════════
+     SHALABY AI WIDGET
+     ═══════════════════════════════════════════ -->
+{% block ai_widget %}{% endblock %}
 
-        <div class="two-col">
-          <div class="card">
-            <div class="card-hdr"><div class="card-ttl">My Posts</div><button class="btn btn-ghost btn-sm" onclick="showTab('posts',null)">View all</button></div>
-            {% if my_posts %}
-              {% for p in my_posts[:3] %}
-              <div style="padding:14px 0;border-bottom:1px solid var(--mist);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <div style="font-size:14px;font-weight:600;color:var(--teal);flex:1;padding-right:12px;">{{ p.title }}</div>
-                  <span class="badge badge-{{ p.status }}">{{ p.status }}</span>
-                </div>
-                <div style="font-size:12px;color:var(--gray);margin-top:4px;">{{ p.app_count }} applications · Due {{ p.deadline }}</div>
-              </div>
-              {% endfor %}
-            {% else %}
-              <div class="empty"><div class="empty-icon">📋</div><div class="empty-ttl">No posts yet</div><div class="empty-sub">Create your first post to attract specialists</div></div>
-            {% endif %}
-          </div>
-          <div class="card">
-            <div class="card-hdr"><div class="card-ttl">Recent Applications</div><button class="btn btn-ghost btn-sm" onclick="showTab('applications',null)">View all</button></div>
-            {% if applications %}
-              {% for a in applications[:4] %}
-              <div style="padding:12px 0;border-bottom:1px solid var(--mist);display:flex;align-items:center;gap:10px;">
-                <div style="width:34px;height:34px;background:linear-gradient(135deg,#7C9A7E,#4A6B4C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:12px;flex-shrink:0;">{{ a.specialist_name[0]|upper }}</div>
-                <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--teal);">{{ a.specialist_name }}</div><div style="font-size:11px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ a.post_title }}</div></div>
-                <span class="badge badge-{{ a.status }}">{{ a.status }}</span>
-              </div>
-              {% endfor %}
-            {% else %}
-              <div class="empty"><div class="empty-icon">📨</div><div class="empty-ttl">No applications yet</div><div class="empty-sub">They'll appear once specialists apply</div></div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-
-      <!-- MY POSTS -->
-      <div class="page-view" id="page-posts">
-        <div class="card">
-          <div class="card-hdr">
-            <div><div class="card-ttl">My Posts</div><div class="card-sub">{{ stats.total_posts }} posts · {{ stats.open_posts }} open</div></div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('newPostModal')">+ New Post</button>
-          </div>
-          {% if my_posts %}
-            {% for p in my_posts %}
-            <div class="post-card">
-              <div class="post-hdr">
-                <div><div class="post-ttl">{{ p.title }}</div><div class="post-meta"><span>📅 {{ p.deadline }}</span><span>📨 {{ p.app_count }} applications</span><span>📆 Posted {{ p.created_at[:10] }}</span></div></div>
-                <span class="badge badge-{{ p.status }}">{{ p.status }}</span>
-              </div>
-              <div class="post-desc">{{ p.description[:200] }}{% if p.description|length > 200 %}...{% endif %}</div>
-              {% if p.skills_needed %}
-              <div class="skills-row">{% for s in p.skills_needed %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>
-              {% endif %}
-              <div class="post-acts">
-                <a href="/messages/0" class="btn btn-ghost btn-sm">View Apps ({{ p.app_count }})</a>
-                {% if p.status == 'open' %}
-                <form method="POST" action="/founder/post/{{ p.id }}/close" style="display:inline;"><button type="submit" class="btn btn-ghost btn-sm">Close</button></form>
-                {% else %}
-                <form method="POST" action="/founder/post/{{ p.id }}/open" style="display:inline;"><button type="submit" class="btn btn-sage btn-sm">Reopen</button></form>
-                {% endif %}
-                <form method="POST" action="/founder/post/{{ p.id }}/delete" onsubmit="return confirm('Delete this post and all its applications?')" style="display:inline;"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>
-              </div>
-            </div>
-            {% endfor %}
-          {% else %}
-            <div class="empty"><div class="empty-icon">📋</div><div class="empty-ttl">No posts yet</div><div class="empty-sub">Click "New Post" to publish your first service request</div></div>
-          {% endif %}
-        </div>
-      </div>
-
-      <!-- APPLICATIONS -->
-      <div class="page-view" id="page-applications">
-        <div class="card">
-          <div class="card-hdr"><div><div class="card-ttl">Applications Received</div><div class="card-sub">{{ stats.total_applications }} total · {{ stats.pending_applications }} pending review</div></div></div>
-          {% if applications %}
-            {% for a in applications %}
-            <div class="app-card">
-              <div class="app-hdr">
-                <div class="app-av">{{ a.specialist_name[0]|upper }}</div>
-                <div style="flex:1;">
-                  <div class="app-nm">{{ a.specialist_name }}</div>
-                  <div class="app-post">Applied to: <strong>{{ a.post_title }}</strong></div>
-                </div>
-                <span class="badge badge-{{ a.status }}">{{ a.status }}</span>
-                <div style="font-size:11px;color:var(--gray);text-align:right;margin-left:12px;">{{ a.created_at[:10] }}</div>
-              </div>
-              {% if a.specialist_skills %}
-              <div class="skills-row" style="margin-bottom:10px;">{% for s in a.specialist_skills %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>
-              {% endif %}
-              <div class="app-msg">"{{ a.message }}"</div>
-              <div class="app-acts">
-                {% if a.status == 'pending' %}
-                <form method="POST" action="/founder/application/{{ a.id }}/accept" style="display:inline;"><button type="submit" class="btn btn-sage btn-sm">✓ Accept</button></form>
-                <form method="POST" action="/founder/application/{{ a.id }}/reject" style="display:inline;"><button type="submit" class="btn btn-danger btn-sm">✕ Reject</button></form>
-                {% endif %}
-                <a href="/messages/{{ a.specialist_id }}" class="btn btn-ghost btn-sm">💬 Message</a>
-                <button class="btn btn-ghost btn-sm" onclick="askAiAbout('{{ a.specialist_name }}','{{ a.specialist_skills|join(', ') if a.specialist_skills else '' }}','{{ a.post_title }}')">🤖 Ask AI</button>
-              </div>
-            </div>
-            {% endfor %}
-          {% else %}
-            <div class="empty"><div class="empty-icon">📨</div><div class="empty-ttl">No applications yet</div><div class="empty-sub">When specialists apply to your posts, they'll appear here</div></div>
-          {% endif %}
-        </div>
-      </div>
-
-      <!-- MESSAGES -->
-      <div class="page-view" id="page-messages">
-        <div class="card-ttl" style="margin-bottom:16px;">Messages</div>
-        {% if conversations %}
-        <div class="msg-layout">
-          <div class="msg-convs">
-            <div class="msg-conv-hdr">Conversations ({{ conversations|length }})</div>
-            {% for c in conversations %}
-            <a href="/messages/{{ c.partner_id }}" style="text-decoration:none;">
-              <div class="conv-item">
-                <div class="conv-av">{{ c.partner_name[0]|upper }}</div>
-                <div style="flex:1;min-width:0;">
-                  <div class="conv-nm">{{ c.partner_name }}</div>
-                  <div class="conv-prev">{{ c.last_message or 'No messages yet' }}</div>
-                </div>
-                {% if c.unread_count and c.unread_count > 0 %}<div class="unread-dot"></div>{% endif %}
-              </div>
-            </a>
-            {% endfor %}
-          </div>
-          <div class="msg-chat" style="display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:14px;font-weight:300;padding:40px;">Select a conversation to open it</div>
-        </div>
-        {% else %}
-          <div class="card"><div class="empty"><div class="empty-icon">💬</div><div class="empty-ttl">No conversations yet</div><div class="empty-sub">Accept an application and message the specialist to get started</div></div></div>
-        {% endif %}
-      </div>
-
-      <!-- PROFILE -->
-      <div class="page-view" id="page-profile">
-        <div class="card">
-          <div class="card-ttl" style="margin-bottom:24px;">Profile Settings</div>
-          <form method="POST" action="/profile/update" enctype="multipart/form-data">
-            <div class="profile-grid">
-              <div>
-                <div class="p-av-big">{{ user.name[0]|upper }}</div>
-                <div class="p-name">{{ user.name }}</div>
-                <div class="p-role">Founder</div>
-                <div style="font-size:12px;color:var(--gray);margin-top:6px;">{{ user.email }}</div>
-              </div>
-              <div>
-                <div class="form-group"><label class="form-group label">Full Name</label><input name="name" type="text" class="form-control" value="{{ user.name }}"></div>
-                <div class="form-group"><label class="form-group label">Company Name</label><input name="company" type="text" class="form-control" value="{{ user.company or '' }}"></div>
-                <div class="form-group"><label class="form-group label">Bio</label><textarea name="bio" class="form-control">{{ user.bio or '' }}</textarea></div>
-                <div class="form-group"><label class="form-group label">Update Profile Photo</label><input name="avatar" type="file" accept="image/*" class="form-control" style="padding:8px 16px;"></div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-
-    </div>
+<!-- AI Entrance Bubble (shown on page load) -->
+<div class="ai-entrance" id="aiEntrance" style="display:none;">
+  <div class="ai-entrance-bubble">
+    ✨ Stackd AI is here to help!
+    <span>Click the button below to chat with me</span>
   </div>
 </div>
 
-<!-- NEW POST MODAL -->
-<div class="modal-ov" id="newPostModal">
-  <div class="modal">
-    <div class="modal-hdr"><div class="modal-ttl">Create New Post</div><button class="modal-close" onclick="closeModal('newPostModal')">✕</button></div>
-    <form method="POST" action="/founder/post/create" enctype="multipart/form-data">
-      <div class="form-group"><label class="form-group label">Post Title *</label><input name="title" type="text" class="form-control" placeholder="e.g. Looking for a Senior React Developer" required></div>
-      <div class="form-group"><label class="form-group label">Description *</label><textarea name="description" class="form-control" placeholder="Describe what you need in detail..." required style="min-height:120px;"></textarea></div>
-      <div class="form-group"><label class="form-group label">Skills Needed (comma-separated)</label><input name="skills" type="text" class="form-control" placeholder="React, TypeScript, Node.js"></div>
-      <div class="form-group"><label class="form-group label">Deadline</label><input name="deadline" type="date" class="form-control" id="deadlineInput"></div>
-      <div class="form-group"><label class="form-group label">Attachment (Optional)</label><input name="attachment" type="file" class="form-control" style="padding:8px 16px;"></div>
-      <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;">Publish Post →</button>
-    </form>
-  </div>
-</div>
-{% endblock %}
-
-{% block ai_widget %}
-<!-- AI CHAT WIDGET -->
-<button id="ai-toggle" title="EquiSwap AI Assistant">
-  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l4.94-1.38C8.42 21.5 10.15 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+<!-- Shalaby Toggle Button -->
+<button id="shalaby-toggle" onclick="toggleShalaby()" title="Chat with Stackd AI">
+  <span class="shalaby-icon">✦</span>
 </button>
-<div id="ai-panel">
-  <div class="ai-header">
-    <div class="ai-avatar">🤖</div>
-    <div class="ai-header-text"><div class="ai-nm">EquiSwap AI</div><div class="ai-status">Your project assistant</div></div>
-    <div class="ai-header-btns">
-      <button class="ai-hbtn" onclick="clearAiChat()" title="Clear chat">🗑</button>
-      <button class="ai-hbtn" onclick="document.getElementById('ai-panel').classList.remove('open')" title="Close">✕</button>
+
+<!-- Shalaby Panel -->
+<div id="shalaby-panel">
+  <div class="shalaby-hdr">
+    <div class="shalaby-avatar">🤖</div>
+    <div class="shalaby-hdr-text">
+      <div class="shalaby-name">Stackd AI</div>
+      <div class="shalaby-tagline">Your Stackd AI Advisor</div>
+      <div class="shalaby-status"><span class="shalaby-dot"></span>Powered by Gemini</div>
+    </div>
+    <div class="shalaby-hdr-btns">
+      <button class="shalaby-hbtn" onclick="clearShalaby()" title="Clear chat">🗑</button>
+      <button class="shalaby-hbtn" onclick="closeShalaby()" title="Close">✕</button>
     </div>
   </div>
-  <div class="ai-messages" id="aiMessages">
-    <div class="ai-msg assistant">Hi {{ user.name.split()[0] }}! 👋 I'm your EquiSwap AI assistant. I know all about your posts and the applications you've received. Ask me anything — like whether an applicant is a good fit, how to improve your posts, or strategy advice.</div>
+  <div class="shalaby-msgs" id="shalabyMsgs">
+    <div class="s-msg assistant" id="welcomeMsg">
+      <div class="s-bubble">
+        {% block ai_welcome %}
+        Hello! I'm <strong>Stackd AI</strong> ✨ — your AI assistant on Stackd. I know your account data and can help you make better decisions. What can I do for you?
+        {% endblock %}
+      </div>
+    </div>
   </div>
-  <div class="ai-suggestions">
-    <button class="ai-sug" onclick="sendAiSug(this)">Review my applicants</button>
-    <button class="ai-sug" onclick="sendAiSug(this)">Improve my posts</button>
-    <button class="ai-sug" onclick="sendAiSug(this)">What skills are in demand?</button>
+  <div class="shalaby-sugs" id="shalabySugs">
+    {% block ai_suggestions %}
+    <button class="s-sug" onclick="sendShalabyQ(this)">How can I improve?</button>
+    <button class="s-sug" onclick="sendShalabyQ(this)">Platform tips</button>
+    <button class="s-sug" onclick="sendShalabyQ(this)">Who should I connect with?</button>
+    {% endblock %}
   </div>
-  <div class="ai-input-row">
-    <input class="ai-input" id="aiInput" placeholder="Ask about applicants, posts, strategy..." onkeydown="if(event.key==='Enter')sendAiMsg()">
-    <button class="ai-send" onclick="sendAiMsg()">Send</button>
+  <div class="shalaby-input-row">
+    <input class="shalaby-input" id="shalabyInput" placeholder="Ask Shalaby anything..." onkeydown="if(event.key==='Enter')sendShalaby()">
+    <button class="shalaby-send" onclick="sendShalaby()">Send ↑</button>
   </div>
 </div>
 
 <script>
-document.getElementById('ai-toggle').addEventListener('click',()=>document.getElementById('ai-panel').classList.toggle('open'));
-document.getElementById('deadlineInput').value=new Date(Date.now()+30*864e5).toISOString().split('T')[0];
+// Flash auto-dismiss
+document.querySelectorAll('.flash').forEach(f => setTimeout(() => {
+  f.style.opacity='0';f.style.transform='translateX(40px)';
+  f.style.transition='all 0.3s';
+  setTimeout(()=>f.remove(),300);
+}, 3500));
 
-// Load AI history
-fetch('/api/ai/history').then(r=>r.json()).then(hist=>{
-  if(hist.length>1){
-    const box=document.getElementById('aiMessages');
-    box.innerHTML='';
-    hist.forEach(m=>{
-      const d=document.createElement('div');
-      d.className='ai-msg '+m.role;
-      d.innerHTML=formatAiMsg(m.content);
-      box.appendChild(d);
-    });
-    box.scrollTop=box.scrollHeight;
-  }
+// Modal helpers
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('modal-ov'))e.target.classList.remove('open');
 });
 
-function formatAiMsg(txt){
-  return txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+// Page tab switching
+function showTab(page,event){
+  document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(el){el.classList.remove('active');void el.offsetWidth;el.classList.add('active');}
+  if(event&&event.currentTarget)event.currentTarget.classList.add('active');
+  const titles={
+    overview:'Overview',posts:'My Posts',applications:'Applications',
+    browse:'Browse Opportunities',messages:'Messages',profile:'Profile Settings',
+    users:'User Management',allposts:'Post Management',allapps:'All Applications',analytics:'Analytics',
+    shalaby:'Stackd AI'
+  };
+  const ttlEl=document.getElementById('topbarTitle');
+  if(ttlEl&&titles[page])ttlEl.textContent=titles[page];
+  history.replaceState(null,'','#'+page);
+}
+
+// Restore tab from hash
+window.addEventListener('DOMContentLoaded',()=>{
+  const hash=location.hash.replace('#','');
+  if(hash&&document.getElementById('page-'+hash))showTab(hash);
+});
+
+// ── SHALABY AI ──────────────────────────────────────────────────────────────
+let shalabyOpen=false;
+let shalabyLoaded=false;
+
+function toggleShalaby(){
+  shalabyOpen=!shalabyOpen;
+  const panel=document.getElementById('shalaby-panel');
+  const btn=document.getElementById('shalaby-toggle');
+  if(shalabyOpen){
+    panel.classList.add('open');
+    btn.classList.add('active');
+    if(!shalabyLoaded)loadShalabyHistory();
+    document.getElementById('shalabyInput').focus();
+  } else {
+    panel.classList.remove('open');
+    btn.classList.remove('active');
+  }
+}
+
+function closeShalaby(){
+  shalabyOpen=false;
+  document.getElementById('shalaby-panel').classList.remove('open');
+  document.getElementById('shalaby-toggle').classList.remove('active');
+}
+
+function loadShalabyHistory(){
+  shalabyLoaded=true;
+  fetch('/api/ai/history').then(r=>r.json()).then(hist=>{
+    if(hist.length>0){
+      const box=document.getElementById('shalabyMsgs');
+      const welcome=document.getElementById('welcomeMsg');
+      if(welcome)welcome.remove();
+      hist.forEach(m=>addShalabyMsg(m.role,m.content,false));
+      box.scrollTop=box.scrollHeight;
+    }
+  }).catch(()=>{});
+}
+
+function formatShalabyMsg(txt){
+  return txt
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/`(.*?)`/g,'<code>$1</code>')
     .replace(/^- (.+)$/gm,'<li>$1</li>')
-    .replace(/<li>/,'<ul><li>').replace(/(<\/li>)(?!<li>)/,'$1</ul>')
+    .replace(/(<li>.*<\/li>)/s,'<ul>$1</ul>')
+    .replace(/\n\n/g,'<br><br>')
     .replace(/\n/g,'<br>');
 }
 
-function addAiMsg(role,content){
-  const box=document.getElementById('aiMessages');
-  const d=document.createElement('div');
-  d.className='ai-msg '+role;
-  d.innerHTML=formatAiMsg(content);
-  box.appendChild(d);
+function addShalabyMsg(role,content,animate=true){
+  const box=document.getElementById('shalabyMsgs');
+  const wrap=document.createElement('div');
+  wrap.className='s-msg '+role;
+  if(animate)wrap.style.animation='tab-in 0.3s ease';
+  const now=new Date();
+  const timeStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  wrap.innerHTML=`<div class="s-bubble">${formatShalabyMsg(content)}</div><div class="s-time">${timeStr}</div>`;
+  box.appendChild(wrap);
   box.scrollTop=box.scrollHeight;
-  return d;
+  return wrap;
 }
 
-function sendAiMsg(){
-  const input=document.getElementById('aiInput');
+function sendShalaby(){
+  const input=document.getElementById('shalabyInput');
   const msg=input.value.trim();
   if(!msg)return;
   input.value='';
-  addAiMsg('user',msg);
-  document.getElementById('ai-panel').classList.add('open');
-  const thinking=addAiMsg('assistant','<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>');
-  fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})
-    .then(r=>r.json()).then(data=>{thinking.innerHTML=formatAiMsg(data.response||data.error||'Error');const box=document.getElementById('aiMessages');box.scrollTop=box.scrollHeight;})
-    .catch(()=>{thinking.innerHTML='Connection error. Try again.';});
-}
 
-function sendAiSug(btn){
-  document.getElementById('aiInput').value=btn.textContent;
-  document.getElementById('ai-panel').classList.add('open');
-  sendAiMsg();
-}
+  // Hide suggestions after first message
+  document.getElementById('shalabySugs').style.display='none';
 
-function clearAiChat(){
-  fetch('/api/ai/clear',{method:'POST'}).then(()=>{
-    document.getElementById('aiMessages').innerHTML='<div class="ai-msg assistant">Chat cleared! How can I help you?</div>';
+  addShalabyMsg('user',msg);
+
+  // Thinking bubble
+  const thinking=document.createElement('div');
+  thinking.className='s-msg assistant';
+  thinking.innerHTML='<div class="s-bubble"><div class="s-thinking"><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div></div></div>';
+  document.getElementById('shalabyMsgs').appendChild(thinking);
+  document.getElementById('shalabyMsgs').scrollTop=9999;
+
+  fetch('/api/ai/chat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message:msg})
+  }).then(r=>r.json()).then(data=>{
+    thinking.remove();
+    addShalabyMsg('assistant',data.response||data.error||'Sorry, something went wrong.');
+  }).catch(()=>{
+    thinking.remove();
+    addShalabyMsg('assistant','Connection error. Please try again.');
   });
 }
 
-function askAiAbout(name,skills,post){
-  document.getElementById('aiInput').value=`Is ${name} a good fit for my post "${post}"? Their skills are: ${skills}`;
-  document.getElementById('ai-panel').classList.add('open');
-  sendAiMsg();
+function sendShalabyQ(btn){
+  document.getElementById('shalabyInput').value=btn.textContent;
+  sendShalaby();
 }
+
+function openShalaby(question){
+  if(!shalabyOpen)toggleShalaby();
+  if(question){
+    document.getElementById('shalabyInput').value=question;
+    sendShalaby();
+  }
+}
+
+function clearShalaby(){
+  fetch('/api/ai/clear',{method:'POST'}).then(()=>{
+    document.getElementById('shalabyMsgs').innerHTML='<div class="s-msg assistant"><div class="s-bubble">Chat cleared! How can I help you?</div></div>';
+    document.getElementById('shalabySugs').style.display='flex';
+    shalabyLoaded=false;
+  });
+}
+
+// Show entrance bubble on first visit
+window.addEventListener('DOMContentLoaded',()=>{
+  const shown=sessionStorage.getItem('shalaby_shown');
+  if(!shown){
+    sessionStorage.setItem('shalaby_shown','1');
+    const el=document.getElementById('aiEntrance');
+    if(el){el.style.display='flex';}
+  }
+});
 </script>
-{% endblock %}
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>
