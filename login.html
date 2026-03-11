@@ -1,145 +1,864 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create Account — EquiSwap</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Stackd</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--sage:#7C9A7E;--sage-light:#A8C5AA;--sage-dark:#4A6B4C;--teal:#1A4A4A;--teal-mid:#2D6B6B;--teal-light:#3D8B8B;--white:#F8F9F6;--mist:#EDF0EC;--gray:#9BA89C;--dark:#0F1F1F;--error:#E07070;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--white);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-.wrap{width:100%;max-width:640px;}
-.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:48px;}
-.logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--teal);text-decoration:none;}
-.logo span{color:var(--sage);}
-.login-lnk{font-size:14px;color:var(--gray);}
-.login-lnk a{color:var(--sage-dark);text-decoration:none;font-weight:500;}
-.login-lnk a:hover{text-decoration:underline;}
-.f-ttl{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--teal);margin-bottom:8px;}
-.f-ttl em{font-style:italic;color:var(--sage);}
-.f-sub{font-size:15px;color:var(--gray);font-weight:300;margin-bottom:36px;}
-/* ROLE CARDS */
-.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
-.role-card{border:2px solid rgba(124,154,126,.25);border-radius:18px;padding:22px 18px;cursor:pointer;transition:all .25s;background:var(--mist);position:relative;}
-.role-card:hover{border-color:var(--sage);background:white;}
-.role-card.active{border-color:var(--teal);background:white;box-shadow:0 0 0 4px rgba(26,74,74,.08);}
-.role-ico{font-size:30px;margin-bottom:10px;}
-.role-nm{font-size:15px;font-weight:600;color:var(--teal);margin-bottom:4px;}
-.role-desc{font-size:12px;color:var(--gray);line-height:1.5;font-weight:300;}
-.role-chk{position:absolute;top:14px;right:14px;width:20px;height:20px;border-radius:50%;border:2px solid rgba(124,154,126,.3);display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:11px;color:transparent;}
-.role-card.active .role-chk{background:var(--teal);border-color:var(--teal);color:white;}
-/* FORM */
-.f-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.f-group{margin-bottom:18px;}
-.f-group label{display:block;font-size:11px;font-weight:600;color:var(--teal);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;}
-.f-group input,.f-group textarea,.f-group select{width:100%;padding:13px 16px;background:var(--mist);border:1.5px solid transparent;border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--dark);transition:all .2s;outline:none;}
-.f-group input:focus,.f-group textarea:focus{border-color:var(--sage);background:white;box-shadow:0 0 0 3px rgba(124,154,126,.1);}
-.f-group textarea{resize:vertical;min-height:75px;}
-.file-area{width:100%;padding:13px 16px;background:var(--mist);border:1.5px dashed rgba(124,154,126,.4);border-radius:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gray);font-family:'DM Sans',sans-serif;}
-.file-area:hover{border-color:var(--sage);background:white;}
-.pw-strength{height:3px;border-radius:2px;margin-top:6px;background:rgba(155,168,156,.2);overflow:hidden;}
-.pw-bar{height:100%;width:0%;border-radius:2px;transition:all .3s;}
-.terms{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--gray);margin-bottom:24px;font-weight:300;line-height:1.5;}
-.terms input{margin-top:2px;flex-shrink:0;}
-.terms a{color:var(--sage-dark);text-decoration:none;}
-.btn-submit{width:100%;padding:16px;background:var(--teal);color:white;border:none;border-radius:50px;font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .3s;box-shadow:0 8px 30px rgba(26,74,74,.25);}
-.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(26,74,74,.35);}
-.err-msg{background:rgba(224,112,112,.1);border:1px solid rgba(224,112,112,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--error);margin-bottom:20px;}
-@media(max-width:600px){.f-row{grid-template-columns:1fr;}.role-grid{grid-template-columns:1fr;}}
+:root {
+  --ink: #0D1F19;
+  --forest: #1A3A2A;
+  --moss: #2E5C42;
+  --sage: #5BAD8A;
+  --mint: #9ADCBF;
+  --mist: #DCF0E7;
+  --foam: #F0FAF5;
+  --white: #FAFCFB;
+  --gray-400: #7A9E8E;
+  --gray-200: #C8DDD5;
+  --err: #D97F6B;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--white);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ── LEFT PANEL ── */
+.panel-left {
+  background: var(--forest);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 48px;
+  overflow: hidden;
+}
+
+.panel-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 75%, rgba(91,173,138,.2) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 15%, rgba(154,220,191,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(154,220,191,.1);
+  animation: drift 10s ease-in-out infinite;
+}
+.orb-1 { width: 120px; height: 120px; top: 20%; left: 8%; animation-delay: 0s; }
+.orb-2 { width: 60px; height: 60px; top: 60%; right: 12%; animation-delay: 3s; border-radius: 12px; }
+.orb-3 { width: 40px; height: 40px; bottom: 25%; left: 38%; animation-delay: 6s; }
+
+@keyframes drift {
+  0%, 100% { transform: translate(0,0) rotate(0deg); }
+  33%       { transform: translate(8px,-12px) rotate(45deg); }
+  66%       { transform: translate(-6px,8px) rotate(90deg); }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--mint), var(--sage));
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+
+.logo-text {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--foam);
+  letter-spacing: -0.5px;
+}
+.logo-text span { color: var(--mint); }
+
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.left-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mint);
+  margin-bottom: 20px;
+}
+
+.left-heading {
+  font-family: 'Fraunces', serif;
+  font-size: 58px;
+  font-weight: 300;
+  line-height: 1.0;
+  color: var(--foam);
+  letter-spacing: -2.5px;
+  margin-bottom: 22px;
+}
+
+.left-heading em {
+  font-style: italic;
+  color: var(--mint);
+}
+
+.left-sub {
+  font-size: 15px;
+  color: rgba(240,250,245,.5);
+  line-height: 1.7;
+  max-width: 320px;
+  font-weight: 400;
+  margin-bottom: 52px;
+}
+
+/* Testimonial card */
+.t-card {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(154,220,191,.12);
+  border-radius: 20px;
+  padding: 24px 26px;
+  max-width: 340px;
+}
+
+.t-quote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(240,250,245,.75);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.t-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.t-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage), var(--moss));
+  display: grid;
+  place-items: center;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.t-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foam);
+}
+.t-role {
+  font-size: 11px;
+  color: rgba(240,250,245,.4);
+  margin-top: 2px;
+}
+
+.left-footer {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  color: rgba(240,250,245,.25);
+}
+
+/* ── RIGHT PANEL ── */
+.panel-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 72px;
+  background: var(--white);
+  min-height: 100vh;
+}
+
+.form-wrap {
+  width: 100%;
+  max-width: 400px;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 56px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--gray-400);
+  text-decoration: none;
+  transition: color .2s;
+}
+.back-link:hover { color: var(--ink); }
+
+.signup-note {
+  font-size: 13px;
+  color: var(--gray-400);
+}
+.signup-note a {
+  color: var(--moss);
+  text-decoration: none;
+  font-weight: 600;
+}
+.signup-note a:hover { text-decoration: underline; }
+
+.form-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 14px;
+}
+
+.form-eyebrow::before {
+  content: '';
+  width: 18px;
+  height: 1.5px;
+  background: var(--sage);
+  border-radius: 2px;
+}
+
+.form-heading {
+  font-family: 'Fraunces', serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+
+.form-sub {
+  font-size: 14px;
+  color: var(--gray-400);
+  margin-bottom: 28px;
+}
+
+.form-sub a {
+  color: var(--moss);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-sub a:hover { text-decoration: underline; }
+
+/* ── GOOGLE BUTTON ── */
+.btn-google {
+  width: 100%;
+  padding: 13px 16px;
+  background: white;
+  border: 1.5px solid var(--mist);
+  border-radius: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all .25s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-google:hover {
+  border-color: var(--sage);
+  background: var(--foam);
+  box-shadow: 0 4px 16px rgba(26,58,42,.08);
+  transform: translateY(-1px);
+}
+
+.btn-google:active { transform: translateY(0); }
+
+.btn-google svg {
+  flex-shrink: 0;
+}
+
+/* Divider */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--mist);
+}
+
+.or-divider span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray-200);
+  white-space: nowrap;
+}
+
+/* Fields */
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--moss);
+  margin-bottom: 7px;
+}
+
+.field input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--foam);
+  border: 1.5px solid transparent;
+  border-radius: 13px;
+  font-size: 14px;
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--ink);
+  outline: none;
+  transition: all .2s;
+}
+
+.field input::placeholder { color: var(--gray-200); }
+
+.field input:focus {
+  border-color: var(--sage);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(91,173,138,.08);
+}
+
+/* Remember / forgot row */
+.row-utils {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  margin-top: 4px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gray-400);
+  cursor: pointer;
+}
+
+.remember input {
+  accent-color: var(--forest);
+  width: 14px;
+  height: 14px;
+}
+
+.forgot {
+  font-size: 13px;
+  color: var(--moss);
+  text-decoration: none;
+  font-weight: 600;
+}
+.forgot:hover { text-decoration: underline; }
+
+/* Submit */
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--forest);
+  color: var(--foam);
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Instrument Sans', sans-serif;
+  cursor: pointer;
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(91,173,138,.15));
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.btn-submit:hover {
+  background: var(--moss);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px rgba(26,58,42,.25);
+}
+
+.btn-submit:hover::before { opacity: 1; }
+.btn-submit:active { transform: translateY(0); }
+
+.btn-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-arrow {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(154,220,191,.2);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  transition: transform .3s;
+}
+
+.btn-submit:hover .btn-arrow { transform: translateX(3px); }
+
+/* Error */
+.err-msg {
+  background: rgba(217,127,107,.06);
+  border: 1.5px solid rgba(217,127,107,.2);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 13px;
+  color: var(--err);
+  margin-bottom: 22px;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: var(--moss);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: inherit;
+  margin-top: 6px;
+  display: block;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.anim-1 { animation: fadeUp .5s .05s both; }
+.anim-2 { animation: fadeUp .5s .12s both; }
+.anim-3 { animation: fadeUp .5s .18s both; }
+.anim-4 { animation: fadeUp .5s .24s both; }
+.anim-5 { animation: fadeUp .5s .30s both; }
+.anim-6 { animation: fadeUp .5s .36s both; }
+
+/* ── FORGOT PASSWORD MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,31,23,.6);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: white;
+  border-radius: 24px;
+  padding: 44px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 40px 100px rgba(10,31,23,.3);
+  animation: fadeUp .35s cubic-bezier(.34,1.4,.64,1) both;
+}
+
+.fp-icon {
+  font-size: 44px;
+  margin-bottom: 18px;
+}
+
+.fp-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.fp-sub {
+  font-size: 13px;
+  color: var(--gray-400);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.fp-err {
+  background: rgba(217,127,107,.06);
+  border: 1.5px solid rgba(217,127,107,.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--err);
+  margin-bottom: 16px;
+  display: none;
+}
+
+.fp-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.fp-btn-primary {
+  flex: 1;
+  padding: 14px;
+  background: var(--forest);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Instrument Sans', sans-serif;
+  cursor: pointer;
+  transition: all .25s;
+}
+
+.fp-btn-primary:hover { background: var(--moss); }
+.fp-btn-primary:disabled { opacity: .6; cursor: default; }
+
+.fp-btn-cancel {
+  padding: 14px 20px;
+  background: transparent;
+  color: var(--gray-400);
+  border: 1.5px solid var(--mist);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Instrument Sans', sans-serif;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.fp-btn-cancel:hover { border-color: var(--sage); color: var(--ink); }
+
+.fp-step { display: none; }
+.fp-step.active { display: block; }
+
+.fp-success-center { text-align: center; }
+
+.fp-success-center .fp-title,
+.fp-success-center .fp-sub { text-align: center; }
+
+.fp-try-again {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--gray-400);
+}
+
+.fp-try-again span {
+  color: var(--moss);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.fp-try-again span:hover { text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  body { grid-template-columns: 1fr; }
+  .panel-left { display: none; }
+  .panel-right { padding: 40px 28px; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top-bar">
-    <a href="/" class="logo">Equi<span>Swap</span></a>
-    <div class="login-lnk">Already have an account? <a href="/login">Sign in →</a></div>
+
+<!-- ── LEFT ── -->
+<aside class="panel-left">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <a href="/" class="logo">
+    <div class="logo-mark">🌿</div>
+    <span class="logo-text">stackd<span>.</span></span>
+  </a>
+
+  <div class="panel-content">
+    <div class="left-eyebrow">Welcome Back</div>
+    <h2 class="left-heading">Good to<br>see you<br><em>again.</em></h2>
+    <p class="left-sub">Your dashboard, posts, and connections are waiting. Sign in and pick up right where you left off.</p>
+
+    <div class="t-card">
+      <div class="t-quote">"Stackd connected me with a brilliant engineer in 3 days. We've been building together for 6 months now."</div>
+      <div class="t-author">
+        <div class="t-avatar">MR</div>
+        <div>
+          <div class="t-name">Mia Ramos</div>
+          <div class="t-role">Founder, Verda Health</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <h1 class="f-ttl">Create your <em>account</em></h1>
-  <p class="f-sub">Join founders and specialists building the future. It's free.</p>
+  <div class="left-footer">© 2026 Stackd — Built for founders & specialists</div>
+</aside>
 
-  {% if error %}<div class="err-msg">{{ error }}</div>{% endif %}
+<!-- ── RIGHT ── -->
+<main class="panel-right">
+  <div class="form-wrap">
+    <div class="top-nav anim-1">
+      <a href="/" class="back-link">← Back to home</a>
+      <div class="signup-note">New here? <a href="/signup">Create account →</a></div>
+    </div>
 
-  <form method="POST" action="/signup" enctype="multipart/form-data">
-    <!-- ROLE -->
-    <div class="role-grid">
-      <div class="role-card {{ 'active' if prefill_role == 'founder' else '' }}" id="card-founder" onclick="setRole('founder')">
-        <div class="role-ico">🚀</div>
-        <div class="role-nm">I'm a Founder</div>
-        <div class="role-desc">I need specialists to help build my startup</div>
-        <div class="role-chk" id="chk-founder">{{ '✓' if prefill_role == 'founder' else '' }}</div>
+    <div class="anim-2">
+      <div class="form-eyebrow">Sign In</div>
+      <h1 class="form-heading">Access your<br>account</h1>
+      <p class="form-sub">Don't have one? <a href="/signup">Sign up for free →</a></p>
+    </div>
+
+    {% if error %}
+    <div class="err-msg anim-2">
+      ⚠ {{ error }}
+      {% if 'verify' in error %}
+      <button id="resend-btn" class="resend-btn" onclick="resendVerification(document.querySelector('input[name=email]').value)">
+        Resend verification email
+      </button>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Google Sign In -->
+    <div class="anim-3">
+      <a href="/auth/google" class="btn-google">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </a>
+    </div>
+
+    <div class="or-divider anim-3">
+      <span>or sign in with email</span>
+    </div>
+
+    <form method="POST" action="/login">
+      <div class="field anim-4">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
       </div>
-      <div class="role-card {{ 'active' if prefill_role == 'specialist' else '' }}" id="card-specialist" onclick="setRole('specialist')">
-        <div class="role-ico">✦</div>
-        <div class="role-nm">I'm a Specialist</div>
-        <div class="role-desc">I want to apply my skills to exciting startups</div>
-        <div class="role-chk" id="chk-specialist">{{ '✓' if prefill_role == 'specialist' else '' }}</div>
+
+      <div class="field anim-4">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Your password" required autocomplete="current-password">
+      </div>
+
+      <div class="row-utils anim-4">
+        <label class="remember">
+          <input type="checkbox" name="remember"> Remember me
+        </label>
+        <a href="#" class="forgot" onclick="openFP(); return false;">Forgot password?</a>
+      </div>
+
+      <div class="anim-5">
+        <button type="submit" class="btn-submit">
+          <div class="btn-inner">
+            Sign In
+            <div class="btn-arrow">→</div>
+          </div>
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- ── FORGOT PASSWORD MODAL ── -->
+<div class="modal-overlay" id="fpOverlay" onclick="if(event.target===this)closeFP()">
+  <div class="modal-box">
+
+    <!-- Step 1 -->
+    <div class="fp-step active" id="fp-step1">
+      <div class="fp-icon">🔐</div>
+      <div class="fp-title">Reset your password</div>
+      <div class="fp-sub">Enter your account email and we'll send you a secure reset link right away.</div>
+
+      <div class="fp-err" id="fp-err1"></div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="fp-email" placeholder="you@example.com">
+      </div>
+
+      <div class="fp-actions">
+        <button class="fp-btn-cancel" onclick="closeFP()">Cancel</button>
+        <button class="fp-btn-primary" id="fp-send-btn" onclick="fpStep1()">Send Reset Link →</button>
       </div>
     </div>
-    <input type="hidden" name="role" id="roleInput" value="{{ prefill_role }}">
 
-    <div class="f-row">
-      <div class="f-group"><label>Full Name *</label><input type="text" name="name" placeholder="Jane Smith" required></div>
-      <div class="f-group"><label>Email Address *</label><input type="email" name="email" placeholder="jane@startup.com" required></div>
-    </div>
-
-    <div id="founder-field" style="{{ '' if prefill_role == 'founder' else 'display:none' }}">
-      <div class="f-group"><label>Company / Startup Name</label><input type="text" name="company" placeholder="Acme Inc."></div>
-    </div>
-    <div id="spec-field" style="{{ '' if prefill_role == 'specialist' else 'display:none' }}">
-      <div class="f-group"><label>Your Skills (comma-separated)</label><input type="text" name="skills" placeholder="React, Node.js, UI Design..."></div>
+    <!-- Step 2 -->
+    <div class="fp-step fp-success-center" id="fp-step2">
+      <div class="fp-icon">📬</div>
+      <div class="fp-title">Check your inbox</div>
+      <div class="fp-sub" id="fp-step2-sub">A password reset link is on its way.</div>
+      <button class="fp-btn-primary" style="width:100%;margin-top:8px;" onclick="closeFP()">Done</button>
+      <div class="fp-try-again">Didn't receive it? <span onclick="fpGoBack()">Try again</span></div>
     </div>
 
-    <div class="f-row">
-      <div class="f-group">
-        <label>Password *</label>
-        <input type="password" name="password" id="pw" placeholder="Min. 6 characters" oninput="checkPw(this.value)" required>
-        <div class="pw-strength"><div class="pw-bar" id="pw-bar"></div></div>
-      </div>
-      <div class="f-group"><label>Confirm Password *</label><input type="password" name="confirm_password" placeholder="Repeat password" required></div>
-    </div>
-
-    <div class="f-group">
-      <label>Profile Photo</label>
-      <label class="file-area"><span>📷</span><span id="photo-lbl">Click to upload photo (JPG, PNG)</span><input type="file" name="avatar" accept="image/*" style="display:none" onchange="setLbl(this,'photo-lbl')"></label>
-    </div>
-    <div class="f-group">
-      <label id="cv-lbl-txt">CV / Portfolio (Optional)</label>
-      <label class="file-area"><span>📎</span><span id="cv-lbl">Upload CV, portfolio or work samples</span><input type="file" name="cv" accept=".pdf,.zip,.png,.jpg,.doc,.docx" style="display:none" onchange="setLbl(this,'cv-lbl')"></label>
-    </div>
-    <div class="f-group">
-      <label>About You (Optional)</label>
-      <textarea name="bio" placeholder="Tell others about your experience, what you're building, or what you do best..."></textarea>
-    </div>
-
-    <div class="terms">
-      <input type="checkbox" name="terms" required>
-      <span>I agree to EquiSwap's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span>
-    </div>
-
-    <button type="submit" class="btn-submit">Create Account →</button>
-  </form>
+  </div>
 </div>
+
 <script>
-let role='{{ prefill_role }}';
-function setRole(r){
-  role=r;
-  document.getElementById('roleInput').value=r;
-  ['founder','specialist'].forEach(x=>{
-    document.getElementById('card-'+x).classList.toggle('active',x===r);
-    document.getElementById('chk-'+x).textContent=x===r?'✓':'';
-  });
-  document.getElementById('founder-field').style.display=r==='founder'?'':'none';
-  document.getElementById('spec-field').style.display=r==='specialist'?'':'none';
-  document.getElementById('cv-lbl-txt').textContent=r==='specialist'?'CV / Portfolio *':'Company Profile (Optional)';
+function openFP() {
+  document.getElementById('fpOverlay').classList.add('open');
+  showFPStep('fp-step1');
+  document.getElementById('fp-email').value = '';
+  hideErr();
+  document.body.style.overflow = 'hidden';
 }
-function checkPw(v){
-  let s=0;
-  if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
-  const w=[0,20,40,65,85,100];const c=['','#E07070','#E0A870','#E0D070','#7C9A7E','#1A4A4A'];
-  const bar=document.getElementById('pw-bar');bar.style.width=w[s]+'%';bar.style.background=c[s];
+
+function closeFP() {
+  document.getElementById('fpOverlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
-function setLbl(input,id){if(input.files[0])document.getElementById(id).textContent='✓ '+input.files[0].name;}
+
+function showFPStep(id) {
+  document.querySelectorAll('.fp-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function hideErr() {
+  const el = document.getElementById('fp-err1');
+  el.style.display = 'none';
+  el.textContent = '';
+}
+
+function showErr(msg) {
+  const el = document.getElementById('fp-err1');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function fpGoBack() { showFPStep('fp-step1'); }
+
+function fpStep1() {
+  const email = document.getElementById('fp-email').value.trim();
+  if (!email || !email.includes('@')) { showErr('Please enter a valid email address.'); return; }
+  hideErr();
+
+  const btn = document.getElementById('fp-send-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  fetch('/forgot-password/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  })
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Link →';
+      if (data.ok) {
+        document.getElementById('fp-step2-sub').innerHTML =
+          'A reset link has been sent to <strong>' + email + '</strong>.';
+        showFPStep('fp-step2');
+      } else {
+        showErr(data.error || 'Something went wrong. Please try again.');
+      }
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Link →';
+      showErr('Connection error. Please try again.');
+    });
+}
+
+function resendVerification(email) {
+  const btn = document.getElementById('resend-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  fetch('/verify-email/resend', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (btn) { btn.disabled = false; btn.textContent = 'Resend verification email'; }
+      if (data.ok) alert('Verification email sent! Check your inbox.');
+      else alert(data.error || 'Could not send email.');
+    })
+    .catch(() => {
+      if (btn) { btn.disabled = false; btn.textContent = 'Resend verification email'; }
+    });
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFP(); });
 </script>
 </body>
 </html>
