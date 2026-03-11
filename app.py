@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}Messages — EquiSwap{% endblock %}
+
+{% block body %}
+<div class="layout">
+  <nav class="sidebar">
+    <a href="/" class="sidebar-logo">Equi<span>Swap</span></a>
+    <div class="sidebar-nav">
+      <div class="nav-section">Navigation</div>
+      {% if user.role == 'founder' %}
+      <a class="nav-item" href="/founder"><span class="nav-icon">🏠</span>Dashboard</a>
+      <a class="nav-item" href="/founder#posts"><span class="nav-icon">📋</span>My Posts</a>
+      <a class="nav-item" href="/founder#applications"><span class="nav-icon">📨</span>Applications</a>
+      <a class="nav-item active" href="/founder#messages"><span class="nav-icon">💬</span>Messages</a>
+      {% else %}
+      <a class="nav-item" href="/specialist"><span class="nav-icon">🏠</span>Dashboard</a>
+      <a class="nav-item" href="/specialist#browse"><span class="nav-icon">🔍</span>Browse Posts</a>
+      <a class="nav-item" href="/specialist#applications"><span class="nav-icon">📨</span>Applications</a>
+      <a class="nav-item active" href="/specialist#messages"><span class="nav-icon">💬</span>Messages</a>
+      {% endif %}
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-info">
+        <div class="user-av">{{ user.name[0]|upper }}</div>
+        <div><div class="user-nm">{{ user.name }}</div><div class="user-rl">{{ user.role|capitalize }}</div></div>
+      </div>
+      <a href="/logout" class="logout-btn">🚪 Sign Out</a>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-ttl">Chat with {{ partner.name }}</div>
+      <a href="/{{ user.role }}" class="btn btn-ghost btn-sm">← Back to Dashboard</a>
+    </div>
+    <div class="content" style="padding:24px 36px;">
+      <div class="msg-layout" style="min-height:calc(100vh - 140px);">
+        <!-- Partner info -->
+        <div class="msg-convs" style="display:flex;flex-direction:column;">
+          <div class="msg-conv-hdr">Conversation</div>
+          <div style="padding:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <div style="width:50px;height:50px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:18px;font-family:'Cormorant Garamond',serif;">{{ partner.name[0]|upper }}</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--teal);">{{ partner.name }}</div>
+                <span class="badge badge-{{ partner.role }}" style="margin-top:4px;">{{ partner.role }}</span>
+              </div>
+            </div>
+            {% if partner.company %}<div style="font-size:12px;color:var(--gray);margin-bottom:6px;">🏢 {{ partner.company }}</div>{% endif %}
+            {% if partner.bio %}<div style="font-size:12px;color:var(--gray);line-height:1.5;font-weight:300;">{{ partner.bio[:120] }}</div>{% endif %}
+          </div>
+          <div style="padding:12px 16px;margin-top:auto;border-top:1px solid var(--mist);">
+            <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;" onclick="askAiAboutPartner()">🤖 Ask AI about {{ partner.name.split()[0] }}</button>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="msg-chat">
+          <div class="msg-chat-hdr">
+            <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:14px;">{{ partner.name[0]|upper }}</div>
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--teal);">{{ partner.name }}</div>
+              <div style="font-size:11px;color:var(--gray);">{{ partner.role|capitalize }}</div>
+            </div>
+          </div>
+          <div class="msg-bubbles" id="msgBubbles">
+            {% for m in chat_messages %}
+            <div style="display:flex;flex-direction:column;align-items:{{ 'flex-end' if m.from_id == user.id else 'flex-start' }};">
+              <div class="bubble {{ 'bubble-sent' if m.from_id == user.id else 'bubble-recv' }}">{{ m.content }}</div>
+              <div class="bubble-time" style="align-self:{{ 'flex-end' if m.from_id == user.id else 'flex-start' }};padding:0 4px;">{{ m.created_at[11:16] }}</div>
+            </div>
+            {% endfor %}
+            {% if not chat_messages %}
+            <div style="text-align:center;color:var(--gray);font-size:13px;font-weight:300;padding:30px;">Start the conversation 👋</div>
+            {% endif %}
+          </div>
+          <div class="msg-input-row" id="msgForm">
+            <input class="msg-input" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()">
+            <button class="msg-send" onclick="sendMsg()">Send →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block ai_widget %}
+<button id="ai-toggle" title="Ask AI about this person">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l4.94-1.38C8.42 21.5 10.15 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+</button>
+<div id="ai-panel">
+  <div class="ai-header">
+    <div class="ai-avatar">🤖</div>
+    <div class="ai-header-text"><div class="ai-nm">EquiSwap AI</div><div class="ai-status">Ask about {{ partner.name.split()[0] }}</div></div>
+    <div class="ai-header-btns">
+      <button class="ai-hbtn" onclick="clearAiChat()">🗑</button>
+      <button class="ai-hbtn" onclick="document.getElementById('ai-panel').classList.remove('open')">✕</button>
+    </div>
+  </div>
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-msg assistant">Hi! You're chatting with <strong>{{ partner.name }}</strong> ({{ partner.role }}). Ask me anything about them or this collaboration!</div>
+  </div>
+  <div class="ai-suggestions">
+    <button class="ai-sug" onclick="sendAiSug(this)">Is {{ partner.name.split()[0] }} a good match?</button>
+    <button class="ai-sug" onclick="sendAiSug(this)">What should I discuss?</button>
+    <button class="ai-sug" onclick="sendAiSug(this)">Red flags to watch for</button>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiInput" placeholder="Ask about this person..." onkeydown="if(event.key==='Enter')sendAiMsg()">
+    <button class="ai-send" onclick="sendAiMsg()">Send</button>
+  </div>
+</div>
+
+<script>
+// Scroll to bottom
+const bubbles=document.getElementById('msgBubbles');
+bubbles.scrollTop=bubbles.scrollHeight;
+
+// AI Toggle
+document.getElementById('ai-toggle').addEventListener('click',()=>document.getElementById('ai-panel').classList.toggle('open'));
+
+const PARTNER_ID={{ partner.id }};
+let lastMsgTime='{{ chat_messages[-1].created_at if chat_messages else "1970-01-01" }}';
+
+// Real-time poll
+function pollMessages(){
+  fetch('/api/messages/'+PARTNER_ID+'/poll?after='+encodeURIComponent(lastMsgTime))
+    .then(r=>r.json()).then(msgs=>{
+      msgs.forEach(m=>{
+        if(m.from_id!=={{ user.id }}){
+          const div=document.createElement('div');
+          div.style.cssText='display:flex;flex-direction:column;align-items:flex-start;';
+          div.innerHTML='<div class="bubble bubble-recv">'+escHtml(m.content)+'</div><div class="bubble-time" style="padding:0 4px;">'+m.created_at.substring(11,16)+'</div>';
+          bubbles.appendChild(div);
+          bubbles.scrollTop=bubbles.scrollHeight;
+        }
+        lastMsgTime=m.created_at;
+      });
+    });
+}
+setInterval(pollMessages,3000);
+
+function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+function sendMsg(){
+  const input=document.getElementById('msgInput');
+  const content=input.value.trim();if(!content)return;
+  input.value='';
+  const div=document.createElement('div');
+  div.style.cssText='display:flex;flex-direction:column;align-items:flex-end;';
+  div.innerHTML='<div class="bubble bubble-sent">'+escHtml(content)+'</div><div class="bubble-time" style="align-self:flex-end;padding:0 4px;">'+new Date().toTimeString().slice(0,5)+'</div>';
+  bubbles.appendChild(div);bubbles.scrollTop=bubbles.scrollHeight;
+  lastMsgTime=new Date().toISOString();
+  fetch('/api/messages/'+PARTNER_ID+'/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})});
+}
+
+function askAiAboutPartner(){
+  document.getElementById('aiInput').value='Tell me about {{ partner.name }} ({{ partner.role }}){% if partner.company %} from {{ partner.company }}{% endif %}. Should I work with them?';
+  document.getElementById('ai-panel').classList.add('open');sendAiMsg();
+}
+
+function formatAiMsg(txt){return txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/<li>/,'<ul><li>').replace(/(<\/li>)(?!<li>)/,'$1</ul>').replace(/\n/g,'<br>');}
+function addAiMsg(role,content){const box=document.getElementById('aiMessages');const d=document.createElement('div');d.className='ai-msg '+role;d.innerHTML=formatAiMsg(content);box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+function sendAiMsg(){
+  const input=document.getElementById('aiInput');const msg=input.value.trim();if(!msg)return;input.value='';
+  addAiMsg('user',msg);document.getElementById('ai-panel').classList.add('open');
+  const t=addAiMsg('assistant','<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>');
+  fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})
+    .then(r=>r.json()).then(data=>{t.innerHTML=formatAiMsg(data.response||'Error');document.getElementById('aiMessages').scrollTop=9999;})
+    .catch(()=>{t.innerHTML='Error connecting.';});
+}
+function sendAiSug(btn){document.getElementById('aiInput').value=btn.textContent;document.getElementById('ai-panel').classList.add('open');sendAiMsg();}
+function clearAiChat(){fetch('/api/ai/clear',{method:'POST'}).then(()=>{document.getElementById('aiMessages').innerHTML='<div class="ai-msg assistant">Chat cleared!</div>';});}
+</script>
+{% endblock %}

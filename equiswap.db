@@ -1,0 +1,166 @@
+# EquiSwap 🌿
+
+A premium service-exchange platform connecting startup founders with specialist freelancers.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Install Flask
+```bash
+pip install flask
+```
+
+### 2. Run the application
+```bash
+python app.py
+```
+
+The app will:
+- Create `equiswap.db` automatically
+- Create the admin account (`admin@gmail.com` / `Admin123`)
+- Start at **http://127.0.0.1:5000**
+
+### 3. Seed demo data (optional but recommended)
+```bash
+python seed_data.py
+```
+
+This creates 7 demo users, 6 posts, 5 applications, and 8 messages so you can explore the platform immediately.
+
+---
+
+## 🔑 Login Accounts
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@gmail.com | Admin123 |
+| Founder | founder@demo.com | Demo123 |
+| Specialist | specialist@demo.com | Demo123 |
+
+---
+
+## 🤖 AI Assistant Setup
+
+The AI assistant uses Claude. To enable it:
+
+```bash
+# Set your Anthropic API key as an environment variable
+export ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
+
+Or on Windows:
+```
+set ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
+
+Without an API key, the AI assistant will show a friendly message explaining how to configure it. All other platform features work without it.
+
+---
+
+## 📁 Project Structure
+
+```
+equiswap/
+├── app.py                  # Main Flask application (all routes)
+├── seed_data.py            # Demo data seeder
+├── equiswap.db             # SQLite database (auto-created)
+├── requirements.txt        # Python dependencies
+├── templates/
+│   ├── base.html           # Shared layout, sidebar, AI widget CSS
+│   ├── index.html          # Landing page with real stats
+│   ├── login.html          # Authentication
+│   ├── signup.html         # Registration with role selection
+│   ├── messages.html       # Real-time messaging page
+│   └── dashboards/
+│       ├── admin.html      # Analytics + user/post/app management
+│       ├── founder.html    # Post management, applications, messaging
+│       └── specialist.html # Browse posts, apply, track status
+└── uploads/                # User uploaded files
+    ├── avatars/
+    ├── cvs/
+    └── posts/
+```
+
+---
+
+## ✨ Features
+
+### Platform
+- **Real stats** on landing page pulled from live database
+- **Authentication** with hashed passwords (SHA-256)
+- **Role-based access** — Admin, Founder, Specialist
+- **File uploads** — profile photos, CVs, post attachments
+
+### Admin Dashboard
+- Live analytics charts (Chart.js) with real data
+- User management (view, delete)
+- Post management with application counts
+- Application overview
+
+### Founder Dashboard
+- Create/manage posts with skills, deadlines, attachments
+- Review applications — accept or reject
+- Real-time style messaging with specialists
+- **AI assistant** with full context of your posts and applicants
+  - Ask: *"Is Marcus a good fit for my React post?"*
+  - Ask: *"How can I improve my post to attract better applicants?"*
+
+### Specialist Dashboard
+- Browse all open posts with search/filter
+- Apply with personalized message and highlighted skills
+- Track application status
+- **AI assistant** with full context
+  - Ask: *"Is this founder worth working with?"*
+  - Ask: *"How do I write a better application message?"*
+
+### AI Assistant
+- Knows your real account data (posts, applications, connections)
+- Knows all live platform statistics
+- Helps evaluate fit, improve applications/posts, strategic advice
+- Chat history persisted per user in database
+- Powered by Claude claude-sonnet-4-5
+
+### Messaging
+- Full conversation pages at `/messages/<partner_id>`
+- Auto-polling every 3 seconds for new messages
+- Unread message indicators
+- AI assistant available on every conversation page
+
+---
+
+## 🗄️ Database Schema
+
+| Table | Purpose |
+|-------|---------|
+| users | All accounts (admin, founder, specialist) |
+| posts | Founder service requests |
+| applications | Specialist applications to posts |
+| messages | Direct messages between users |
+| ai_chats | AI conversation history per user |
+
+---
+
+## 🎨 Design
+
+- **Colors:** Sage Green, Deep Teal, Soft Cloud White, Light Mist Gray
+- **Fonts:** Cormorant Garamond (display) + DM Sans (body)
+- **3D animation:** Three.js wireframe shapes on landing page
+- **Charts:** Chart.js with real database data
+- **Mobile responsive**
+
+---
+
+## 📦 Dependencies
+
+Only one dependency needed:
+```
+flask>=3.0.0
+```
+
+Everything else uses Python stdlib:
+- `sqlite3` — database
+- `hashlib` — password hashing
+- `json` — serialization
+- `urllib` — AI API calls
+- `secrets` — secure tokens

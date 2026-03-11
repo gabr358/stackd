@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% block title %}Founder Dashboard — EquiSwap{% endblock %}
+{% block extra_head %}
+<style>
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.post-card{background:white;border-radius:18px;padding:24px;border:1px solid rgba(124,154,126,.12);margin-bottom:14px;transition:all .25s;}
+.post-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(26,74,74,.1);}
+.post-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.post-ttl{font-size:16px;font-weight:600;color:var(--teal);}
+.post-meta{display:flex;gap:16px;font-size:12px;color:var(--gray);margin-top:4px;flex-wrap:wrap;}
+.post-desc{font-size:13px;color:var(--gray);line-height:1.6;margin:10px 0;font-weight:300;}
+.skills-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.post-acts{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--mist);}
+.app-card{background:white;border-radius:18px;padding:22px;border:1px solid rgba(124,154,126,.12);margin-bottom:12px;transition:all .25s;}
+.app-card:hover{box-shadow:0 6px 24px rgba(26,74,74,.08);}
+.app-hdr{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.app-av{width:44px;height:44px;background:linear-gradient(135deg,var(--sage),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:16px;font-family:'Cormorant Garamond',serif;flex-shrink:0;}
+.app-nm{font-size:15px;font-weight:600;color:var(--teal);}
+.app-post{font-size:12px;color:var(--gray);margin-top:2px;}
+.app-msg{font-size:13px;color:var(--dark);line-height:1.6;background:var(--mist);padding:13px 16px;border-radius:12px;margin-bottom:12px;font-weight:300;}
+.app-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.profile-grid{display:grid;grid-template-columns:200px 1fr;gap:28px;}
+.p-av-big{width:80px;height:80px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:white;margin-bottom:16px;}
+.p-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--teal);}
+.p-role{font-size:12px;color:var(--sage-dark);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+@media(max-width:1000px){.two-col{grid-template-columns:1fr;}.profile-grid{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="layout">
+  <nav class="sidebar">
+    <a href="/" class="sidebar-logo">Equi<span>Swap</span></a>
+    <div class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <a class="nav-item active" onclick="showTab('overview',event)"><span class="nav-icon">🏠</span>Overview</a>
+      <div class="nav-section">My Work</div>
+      <a class="nav-item" onclick="showTab('posts',event)"><span class="nav-icon">📋</span>My Posts <span class="nav-badge">{{ stats.total_posts }}</span></a>
+      <a class="nav-item" onclick="showTab('applications',event)"><span class="nav-icon">📨</span>Applications <span class="nav-badge">{{ stats.pending_applications }}</span></a>
+      <a class="nav-item" onclick="showTab('messages',event)"><span class="nav-icon">💬</span>Messages {% if stats.unread_messages > 0 %}<span class="nav-badge">{{ stats.unread_messages }}</span>{% endif %}</a>
+      <div class="nav-section">Account</div>
+      <a class="nav-item" onclick="showTab('profile',event)"><span class="nav-icon">👤</span>Profile</a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-info">
+        <div class="user-av">{{ user.name[0]|upper }}</div>
+        <div><div class="user-nm">{{ user.name }}</div><div class="user-rl">Founder{% if user.company %} · {{ user.company }}{% endif %}</div></div>
+      </div>
+      <a href="/logout" class="logout-btn">🚪 Sign Out</a>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-ttl" id="topbarTitle">Welcome back, {{ user.name.split()[0] }} 👋</div>
+      <button class="btn btn-primary" onclick="openModal('newPostModal')">+ New Post</button>
+    </div>
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <div class="page-view active" id="page-overview">
+        <div class="metrics">
+          <div class="metric"><div class="metric-ico" style="background:rgba(26,74,74,.08);">📋</div><div class="metric-val">{{ stats.total_posts }}</div><div class="metric-lbl">Total Posts</div></div>
+          <div class="metric"><div class="metric-ico" style="background:rgba(124,154,126,.1);">📨</div><div class="metric-val">{{ stats.total_applications }}</div><div class="metric-lbl">Applications</div></div>
+          <div class="metric"><div class="metric-ico" style="background:rgba(61,139,139,.1);">✅</div><div class="metric-val">{{ stats.accepted_applications }}</div><div class="metric-lbl">Accepted</div></div>
+          <div class="metric"><div class="metric-ico" style="background:rgba(168,197,170,.15);">💬</div><div class="metric-val">{{ stats.unread_messages }}</div><div class="metric-lbl">Unread Messages</div></div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-hdr"><div class="card-ttl">My Posts</div><button class="btn btn-ghost btn-sm" onclick="showTab('posts',null)">View all</button></div>
+            {% if my_posts %}
+              {% for p in my_posts[:3] %}
+              <div style="padding:14px 0;border-bottom:1px solid var(--mist);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div style="font-size:14px;font-weight:600;color:var(--teal);flex:1;padding-right:12px;">{{ p.title }}</div>
+                  <span class="badge badge-{{ p.status }}">{{ p.status }}</span>
+                </div>
+                <div style="font-size:12px;color:var(--gray);margin-top:4px;">{{ p.app_count }} applications · Due {{ p.deadline }}</div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="empty"><div class="empty-icon">📋</div><div class="empty-ttl">No posts yet</div><div class="empty-sub">Create your first post to attract specialists</div></div>
+            {% endif %}
+          </div>
+          <div class="card">
+            <div class="card-hdr"><div class="card-ttl">Recent Applications</div><button class="btn btn-ghost btn-sm" onclick="showTab('applications',null)">View all</button></div>
+            {% if applications %}
+              {% for a in applications[:4] %}
+              <div style="padding:12px 0;border-bottom:1px solid var(--mist);display:flex;align-items:center;gap:10px;">
+                <div style="width:34px;height:34px;background:linear-gradient(135deg,#7C9A7E,#4A6B4C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:12px;flex-shrink:0;">{{ a.specialist_name[0]|upper }}</div>
+                <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--teal);">{{ a.specialist_name }}</div><div style="font-size:11px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ a.post_title }}</div></div>
+                <span class="badge badge-{{ a.status }}">{{ a.status }}</span>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="empty"><div class="empty-icon">📨</div><div class="empty-ttl">No applications yet</div><div class="empty-sub">They'll appear once specialists apply</div></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- MY POSTS -->
+      <div class="page-view" id="page-posts">
+        <div class="card">
+          <div class="card-hdr">
+            <div><div class="card-ttl">My Posts</div><div class="card-sub">{{ stats.total_posts }} posts · {{ stats.open_posts }} open</div></div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('newPostModal')">+ New Post</button>
+          </div>
+          {% if my_posts %}
+            {% for p in my_posts %}
+            <div class="post-card">
+              <div class="post-hdr">
+                <div><div class="post-ttl">{{ p.title }}</div><div class="post-meta"><span>📅 {{ p.deadline }}</span><span>📨 {{ p.app_count }} applications</span><span>📆 Posted {{ p.created_at[:10] }}</span></div></div>
+                <span class="badge badge-{{ p.status }}">{{ p.status }}</span>
+              </div>
+              <div class="post-desc">{{ p.description[:200] }}{% if p.description|length > 200 %}...{% endif %}</div>
+              {% if p.skills_needed %}
+              <div class="skills-row">{% for s in p.skills_needed %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>
+              {% endif %}
+              <div class="post-acts">
+                <a href="/messages/0" class="btn btn-ghost btn-sm">View Apps ({{ p.app_count }})</a>
+                {% if p.status == 'open' %}
+                <form method="POST" action="/founder/post/{{ p.id }}/close" style="display:inline;"><button type="submit" class="btn btn-ghost btn-sm">Close</button></form>
+                {% else %}
+                <form method="POST" action="/founder/post/{{ p.id }}/open" style="display:inline;"><button type="submit" class="btn btn-sage btn-sm">Reopen</button></form>
+                {% endif %}
+                <form method="POST" action="/founder/post/{{ p.id }}/delete" onsubmit="return confirm('Delete this post and all its applications?')" style="display:inline;"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty"><div class="empty-icon">📋</div><div class="empty-ttl">No posts yet</div><div class="empty-sub">Click "New Post" to publish your first service request</div></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- APPLICATIONS -->
+      <div class="page-view" id="page-applications">
+        <div class="card">
+          <div class="card-hdr"><div><div class="card-ttl">Applications Received</div><div class="card-sub">{{ stats.total_applications }} total · {{ stats.pending_applications }} pending review</div></div></div>
+          {% if applications %}
+            {% for a in applications %}
+            <div class="app-card">
+              <div class="app-hdr">
+                <div class="app-av">{{ a.specialist_name[0]|upper }}</div>
+                <div style="flex:1;">
+                  <div class="app-nm">{{ a.specialist_name }}</div>
+                  <div class="app-post">Applied to: <strong>{{ a.post_title }}</strong></div>
+                </div>
+                <span class="badge badge-{{ a.status }}">{{ a.status }}</span>
+                <div style="font-size:11px;color:var(--gray);text-align:right;margin-left:12px;">{{ a.created_at[:10] }}</div>
+              </div>
+              {% if a.specialist_skills %}
+              <div class="skills-row" style="margin-bottom:10px;">{% for s in a.specialist_skills %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>
+              {% endif %}
+              <div class="app-msg">"{{ a.message }}"</div>
+              <div class="app-acts">
+                {% if a.status == 'pending' %}
+                <form method="POST" action="/founder/application/{{ a.id }}/accept" style="display:inline;"><button type="submit" class="btn btn-sage btn-sm">✓ Accept</button></form>
+                <form method="POST" action="/founder/application/{{ a.id }}/reject" style="display:inline;"><button type="submit" class="btn btn-danger btn-sm">✕ Reject</button></form>
+                {% endif %}
+                <a href="/messages/{{ a.specialist_id }}" class="btn btn-ghost btn-sm">💬 Message</a>
+                <button class="btn btn-ghost btn-sm" onclick="askAiAbout('{{ a.specialist_name }}','{{ a.specialist_skills|join(', ') if a.specialist_skills else '' }}','{{ a.post_title }}')">🤖 Ask AI</button>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty"><div class="empty-icon">📨</div><div class="empty-ttl">No applications yet</div><div class="empty-sub">When specialists apply to your posts, they'll appear here</div></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="page-view" id="page-messages">
+        <div class="card-ttl" style="margin-bottom:16px;">Messages</div>
+        {% if conversations %}
+        <div class="msg-layout">
+          <div class="msg-convs">
+            <div class="msg-conv-hdr">Conversations ({{ conversations|length }})</div>
+            {% for c in conversations %}
+            <a href="/messages/{{ c.partner_id }}" style="text-decoration:none;">
+              <div class="conv-item">
+                <div class="conv-av">{{ c.partner_name[0]|upper }}</div>
+                <div style="flex:1;min-width:0;">
+                  <div class="conv-nm">{{ c.partner_name }}</div>
+                  <div class="conv-prev">{{ c.last_message or 'No messages yet' }}</div>
+                </div>
+                {% if c.unread_count and c.unread_count > 0 %}<div class="unread-dot"></div>{% endif %}
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+          <div class="msg-chat" style="display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:14px;font-weight:300;padding:40px;">Select a conversation to open it</div>
+        </div>
+        {% else %}
+          <div class="card"><div class="empty"><div class="empty-icon">💬</div><div class="empty-ttl">No conversations yet</div><div class="empty-sub">Accept an application and message the specialist to get started</div></div></div>
+        {% endif %}
+      </div>
+
+      <!-- PROFILE -->
+      <div class="page-view" id="page-profile">
+        <div class="card">
+          <div class="card-ttl" style="margin-bottom:24px;">Profile Settings</div>
+          <form method="POST" action="/profile/update" enctype="multipart/form-data">
+            <div class="profile-grid">
+              <div>
+                <div class="p-av-big">{{ user.name[0]|upper }}</div>
+                <div class="p-name">{{ user.name }}</div>
+                <div class="p-role">Founder</div>
+                <div style="font-size:12px;color:var(--gray);margin-top:6px;">{{ user.email }}</div>
+              </div>
+              <div>
+                <div class="form-group"><label class="form-group label">Full Name</label><input name="name" type="text" class="form-control" value="{{ user.name }}"></div>
+                <div class="form-group"><label class="form-group label">Company Name</label><input name="company" type="text" class="form-control" value="{{ user.company or '' }}"></div>
+                <div class="form-group"><label class="form-group label">Bio</label><textarea name="bio" class="form-control">{{ user.bio or '' }}</textarea></div>
+                <div class="form-group"><label class="form-group label">Update Profile Photo</label><input name="avatar" type="file" accept="image/*" class="form-control" style="padding:8px 16px;"></div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- NEW POST MODAL -->
+<div class="modal-ov" id="newPostModal">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">Create New Post</div><button class="modal-close" onclick="closeModal('newPostModal')">✕</button></div>
+    <form method="POST" action="/founder/post/create" enctype="multipart/form-data">
+      <div class="form-group"><label class="form-group label">Post Title *</label><input name="title" type="text" class="form-control" placeholder="e.g. Looking for a Senior React Developer" required></div>
+      <div class="form-group"><label class="form-group label">Description *</label><textarea name="description" class="form-control" placeholder="Describe what you need in detail..." required style="min-height:120px;"></textarea></div>
+      <div class="form-group"><label class="form-group label">Skills Needed (comma-separated)</label><input name="skills" type="text" class="form-control" placeholder="React, TypeScript, Node.js"></div>
+      <div class="form-group"><label class="form-group label">Deadline</label><input name="deadline" type="date" class="form-control" id="deadlineInput"></div>
+      <div class="form-group"><label class="form-group label">Attachment (Optional)</label><input name="attachment" type="file" class="form-control" style="padding:8px 16px;"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;">Publish Post →</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block ai_widget %}
+<!-- AI CHAT WIDGET -->
+<button id="ai-toggle" title="EquiSwap AI Assistant">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l4.94-1.38C8.42 21.5 10.15 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+</button>
+<div id="ai-panel">
+  <div class="ai-header">
+    <div class="ai-avatar">🤖</div>
+    <div class="ai-header-text"><div class="ai-nm">EquiSwap AI</div><div class="ai-status">Your project assistant</div></div>
+    <div class="ai-header-btns">
+      <button class="ai-hbtn" onclick="clearAiChat()" title="Clear chat">🗑</button>
+      <button class="ai-hbtn" onclick="document.getElementById('ai-panel').classList.remove('open')" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-msg assistant">Hi {{ user.name.split()[0] }}! 👋 I'm your EquiSwap AI assistant. I know all about your posts and the applications you've received. Ask me anything — like whether an applicant is a good fit, how to improve your posts, or strategy advice.</div>
+  </div>
+  <div class="ai-suggestions">
+    <button class="ai-sug" onclick="sendAiSug(this)">Review my applicants</button>
+    <button class="ai-sug" onclick="sendAiSug(this)">Improve my posts</button>
+    <button class="ai-sug" onclick="sendAiSug(this)">What skills are in demand?</button>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiInput" placeholder="Ask about applicants, posts, strategy..." onkeydown="if(event.key==='Enter')sendAiMsg()">
+    <button class="ai-send" onclick="sendAiMsg()">Send</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('ai-toggle').addEventListener('click',()=>document.getElementById('ai-panel').classList.toggle('open'));
+document.getElementById('deadlineInput').value=new Date(Date.now()+30*864e5).toISOString().split('T')[0];
+
+// Load AI history
+fetch('/api/ai/history').then(r=>r.json()).then(hist=>{
+  if(hist.length>1){
+    const box=document.getElementById('aiMessages');
+    box.innerHTML='';
+    hist.forEach(m=>{
+      const d=document.createElement('div');
+      d.className='ai-msg '+m.role;
+      d.innerHTML=formatAiMsg(m.content);
+      box.appendChild(d);
+    });
+    box.scrollTop=box.scrollHeight;
+  }
+});
+
+function formatAiMsg(txt){
+  return txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/<li>/,'<ul><li>').replace(/(<\/li>)(?!<li>)/,'$1</ul>')
+    .replace(/\n/g,'<br>');
+}
+
+function addAiMsg(role,content){
+  const box=document.getElementById('aiMessages');
+  const d=document.createElement('div');
+  d.className='ai-msg '+role;
+  d.innerHTML=formatAiMsg(content);
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
+  return d;
+}
+
+function sendAiMsg(){
+  const input=document.getElementById('aiInput');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+  addAiMsg('user',msg);
+  document.getElementById('ai-panel').classList.add('open');
+  const thinking=addAiMsg('assistant','<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>');
+  fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})
+    .then(r=>r.json()).then(data=>{thinking.innerHTML=formatAiMsg(data.response||data.error||'Error');const box=document.getElementById('aiMessages');box.scrollTop=box.scrollHeight;})
+    .catch(()=>{thinking.innerHTML='Connection error. Try again.';});
+}
+
+function sendAiSug(btn){
+  document.getElementById('aiInput').value=btn.textContent;
+  document.getElementById('ai-panel').classList.add('open');
+  sendAiMsg();
+}
+
+function clearAiChat(){
+  fetch('/api/ai/clear',{method:'POST'}).then(()=>{
+    document.getElementById('aiMessages').innerHTML='<div class="ai-msg assistant">Chat cleared! How can I help you?</div>';
+  });
+}
+
+function askAiAbout(name,skills,post){
+  document.getElementById('aiInput').value=`Is ${name} a good fit for my post "${post}"? Their skills are: ${skills}`;
+  document.getElementById('ai-panel').classList.add('open');
+  sendAiMsg();
+}
+</script>
+{% endblock %}

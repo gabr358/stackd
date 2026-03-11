@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — EquiSwap</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--sage:#7C9A7E;--sage-light:#A8C5AA;--sage-dark:#4A6B4C;--teal:#1A4A4A;--teal-mid:#2D6B6B;--teal-light:#3D8B8B;--white:#F8F9F6;--mist:#EDF0EC;--gray:#9BA89C;--dark:#0F1F1F;--error:#E07070;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--white);min-height:100vh;display:flex;}
+.left{width:50%;background:var(--teal);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px;position:relative;overflow:hidden;}
+.left::before{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(124,154,126,.3) 0%,transparent 70%);top:-100px;right:-100px;border-radius:50%;}
+.left::after{content:'';position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(61,139,139,.25) 0%,transparent 70%);bottom:-80px;left:-80px;border-radius:50%;}
+.lc{position:relative;z-index:1;max-width:380px;}
+.l-logo{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:white;margin-bottom:48px;display:block;text-decoration:none;}
+.l-logo span{color:var(--sage-light);}
+.l-h{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:white;line-height:1.1;margin-bottom:20px;}
+.l-h em{font-style:italic;color:var(--sage-light);}
+.l-p{color:rgba(255,255,255,.6);font-size:15px;line-height:1.7;font-weight:300;margin-bottom:48px;}
+.tcard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:24px;}
+.tc-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,255,255,.85);line-height:1.6;margin-bottom:16px;}
+.tc-auth{display:flex;align-items:center;gap:12px;}
+.tc-av{width:36px;height:36px;background:linear-gradient(135deg,var(--sage),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:13px;}
+.tc-nm{font-size:13px;color:white;font-weight:500;}
+.tc-rl{font-size:11px;color:rgba(255,255,255,.45);margin-top:1px;}
+.shape{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.07);animation:float 8s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translate(0,0) rotate(0deg);}33%{transform:translate(10px,-15px) rotate(60deg);}66%{transform:translate(-8px,8px) rotate(120deg);}}
+.sh1{width:80px;height:80px;top:20%;left:15%;}
+.sh2{width:50px;height:50px;top:65%;right:20%;animation-delay:2s;border-radius:8px;}
+.sh3{width:35px;height:35px;bottom:25%;left:30%;animation-delay:4s;}
+.right{width:50%;display:flex;align-items:center;justify-content:center;padding:60px 70px;}
+.form-wrap{width:100%;max-width:420px;}
+.f-head{margin-bottom:40px;}
+.f-welcome{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--sage);font-weight:600;margin-bottom:10px;}
+.f-ttl{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:400;color:var(--teal);line-height:1.1;}
+.f-sub{font-size:14px;color:var(--gray);margin-top:10px;font-weight:300;}
+.f-sub a{color:var(--sage-dark);text-decoration:none;font-weight:500;}
+.f-sub a:hover{text-decoration:underline;}
+.f-group{margin-bottom:20px;}
+.f-group label{display:block;font-size:11px;font-weight:600;color:var(--teal);margin-bottom:8px;letter-spacing:.3px;text-transform:uppercase;}
+.f-group input{width:100%;padding:14px 18px;background:var(--mist);border:1.5px solid transparent;border-radius:12px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--dark);transition:all .2s;outline:none;}
+.f-group input:focus{border-color:var(--sage);background:white;box-shadow:0 0 0 4px rgba(124,154,126,.1);}
+.f-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
+.remember{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray);cursor:pointer;}
+.forgot{font-size:13px;color:var(--sage-dark);text-decoration:none;font-weight:500;}
+.forgot:hover{text-decoration:underline;}
+.btn-submit{width:100%;padding:16px;background:var(--teal);color:white;border:none;border-radius:50px;font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .3s;box-shadow:0 8px 30px rgba(26,74,74,.25);}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(26,74,74,.35);}
+.divider{display:flex;align-items:center;gap:16px;margin:28px 0;color:var(--gray);font-size:12px;letter-spacing:1px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(155,168,156,.3);}
+.demo-box{background:var(--mist);border-radius:14px;padding:16px 20px;font-size:12px;color:var(--gray);line-height:1.8;}
+.demo-box strong{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;font-weight:600;}
+.demo-btn{display:inline-block;margin:2px;padding:5px 14px;border-radius:50px;border:1px solid var(--sage);color:var(--sage-dark);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;font-family:'DM Sans',sans-serif;}
+.demo-btn:hover{background:var(--sage);color:white;}
+.err-msg{background:rgba(224,112,112,.1);border:1px solid rgba(224,112,112,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--error);margin-bottom:20px;}
+@media(max-width:768px){body{flex-direction:column;}.left{width:100%;padding:40px 30px;min-height:280px;}.right{width:100%;padding:40px 30px;}.l-h{font-size:36px;}}
+</style>
+</head>
+<body>
+<div class="left">
+  <div class="shape sh1"></div><div class="shape sh2"></div><div class="shape sh3"></div>
+  <div class="lc">
+    <a href="/" class="l-logo">Equi<span>Swap</span></a>
+    <h2 class="l-h">Welcome<br><em>back.</em></h2>
+    <p class="l-p">Sign in to access your dashboard, manage your posts, and connect with talented people.</p>
+    <div class="tcard">
+      <p class="tc-txt">"EquiSwap + the AI assistant changed how I hire. I found my lead developer in 3 days."</p>
+      <div class="tc-auth">
+        <div class="tc-av">A</div>
+        <div><div class="tc-nm">Alex Morgan</div><div class="tc-rl">Founder, TechFlow</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="form-wrap">
+    <div class="f-head">
+      <div class="f-welcome">Sign In</div>
+      <h1 class="f-ttl">Access your account</h1>
+      <p class="f-sub">Don't have one? <a href="/signup">Create an account →</a></p>
+    </div>
+
+    {% if error %}<div class="err-msg">{{ error }}</div>{% endif %}
+
+    <form method="POST" action="/login">
+      <div class="f-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+      </div>
+      <div class="f-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Your password" required autocomplete="current-password">
+      </div>
+      <div class="f-row">
+        <label class="remember"><input type="checkbox" name="remember"> Remember me</label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn-submit">Sign In →</button>
+    </form>
+
+    <div class="divider">Quick Demo Access</div>
+    <div class="demo-box">
+      <strong>Demo Accounts</strong>
+      <div>
+        <button class="demo-btn" onclick="fill('admin@gmail.com','Admin123')">Admin</button>
+        <button class="demo-btn" onclick="fill('founder@demo.com','Demo123')">Founder</button>
+        <button class="demo-btn" onclick="fill('specialist@demo.com','Demo123')">Specialist</button>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:#b0bdb1;">These accounts are seeded automatically on first run.</div>
+    </div>
+  </div>
+</div>
+<script>
+function fill(e,p){document.querySelector('input[name="email"]').value=e;document.querySelector('input[name="password"]').value=p;}
+</script>
+</body>
+</html>

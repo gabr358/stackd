@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+{% block title %}Specialist Dashboard — EquiSwap{% endblock %}
+{% block extra_head %}
+<style>
+.opp-card{background:white;border-radius:18px;padding:26px;border:1px solid rgba(124,154,126,.12);margin-bottom:16px;transition:all .3s;}
+.opp-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(26,74,74,.12);border-color:rgba(124,154,126,.3);}
+.opp-founder{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.f-av{width:36px;height:36px;background:linear-gradient(135deg,var(--teal-mid),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;color:white;font-size:13px;flex-shrink:0;}
+.f-nm{font-size:13px;font-weight:600;color:var(--teal);}
+.f-co{font-size:11px;color:var(--gray);}
+.opp-ttl{font-size:18px;font-weight:600;color:var(--teal);margin-bottom:8px;}
+.opp-desc{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:12px;font-weight:300;}
+.opp-foot{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--mist);}
+.opp-meta{display:flex;gap:18px;font-size:12px;color:var(--gray);}
+.opp-btns{display:flex;gap:8px;}
+.app-card{background:white;border-radius:18px;padding:22px;border:1px solid rgba(124,154,126,.12);margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start;}
+.app-post-ttl{font-size:15px;font-weight:600;color:var(--teal);margin-bottom:4px;}
+.app-post-co{font-size:12px;color:var(--gray);margin-bottom:10px;}
+.app-msg-prev{font-size:13px;color:var(--gray);font-weight:300;font-style:italic;line-height:1.5;}
+.search-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.s-input{flex:1;min-width:200px;padding:10px 16px;background:var(--mist);border:1.5px solid transparent;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;}
+.s-input:focus{border-color:var(--sage);background:white;}
+.f-btn{padding:10px 18px;background:var(--mist);border:1.5px solid transparent;border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--teal);cursor:pointer;transition:all .2s;font-weight:500;}
+.f-btn.act{background:var(--teal);color:white;border-color:var(--teal);}
+.profile-grid{display:grid;grid-template-columns:200px 1fr;gap:28px;}
+.p-av-big{width:80px;height:80px;background:linear-gradient(135deg,var(--sage),var(--teal-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:white;margin-bottom:16px;}
+@media(max-width:1000px){.profile-grid{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="layout">
+  <nav class="sidebar">
+    <a href="/" class="sidebar-logo">Equi<span>Swap</span></a>
+    <div class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <a class="nav-item active" onclick="showTab('overview',event)"><span class="nav-icon">🏠</span>Overview</a>
+      <div class="nav-section">Opportunities</div>
+      <a class="nav-item" onclick="showTab('browse',event)"><span class="nav-icon">🔍</span>Browse Posts <span class="nav-badge">{{ stats.open_posts }}</span></a>
+      <a class="nav-item" onclick="showTab('applications',event)"><span class="nav-icon">📨</span>My Applications <span class="nav-badge">{{ stats.my_applications }}</span></a>
+      <a class="nav-item" onclick="showTab('messages',event)"><span class="nav-icon">💬</span>Messages {% if stats.unread_messages > 0 %}<span class="nav-badge">{{ stats.unread_messages }}</span>{% endif %}</a>
+      <div class="nav-section">Account</div>
+      <a class="nav-item" onclick="showTab('profile',event)"><span class="nav-icon">👤</span>Profile</a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-info">
+        <div class="user-av">{{ user.name[0]|upper }}</div>
+        <div><div class="user-nm">{{ user.name }}</div><div class="user-rl">Specialist</div></div>
+      </div>
+      <a href="/logout" class="logout-btn">🚪 Sign Out</a>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-ttl" id="topbarTitle">Welcome back, {{ user.name.split()[0] }} 👋</div>
+      <div style="font-size:13px;color:var(--gray);" id="dt"></div>
+    </div>
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <div class="page-view active" id="page-overview">
+        <div class="metrics">
+          <div class="metric"><div class="metric-ico" style="background:rgba(124,154,126,.1);">🔍</div><div class="metric-val">{{ stats.open_posts }}</div><div class="metric-lbl">Open Posts</div></div>
+          <div class="metric"><div class="metric-ico" style="background:rgba(26,74,74,.08);">📨</div><div class="metric-val">{{ stats.my_applications }}</div><div class="metric-lbl">My Applications</div></div>
+          <div class="metric"><div class="metric-ico" style="background:rgba(61,139,139,.1);">✅</div><div class="metric-val">{{ stats.accepted }}</div><div class="metric-lbl">Accepted</div></div>
+          <div class="metric"><div class="metric-ico" style="background:rgba(168,197,170,.15);">💬</div><div class="metric-val">{{ stats.unread_messages }}</div><div class="metric-lbl">Unread Messages</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+          <div class="card">
+            <div class="card-hdr"><div class="card-ttl">Latest Opportunities</div><button class="btn btn-ghost btn-sm" onclick="showTab('browse',null)">Browse all →</button></div>
+            {% for p in open_posts[:4] %}
+            <div style="padding:14px 0;border-bottom:1px solid var(--mist);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+                <div style="font-size:14px;font-weight:600;color:var(--teal);flex:1;padding-right:12px;">{{ p.title }}</div>
+                {% if p.id in applied_post_ids %}<span class="badge" style="background:rgba(61,139,139,.1);color:var(--teal-mid);">Applied</span>{% else %}<span class="badge badge-open">Open</span>{% endif %}
+              </div>
+              <div style="font-size:12px;color:var(--gray);">{{ p.founder_name }}{% if p.founder_company %} · {{ p.founder_company }}{% endif %}</div>
+              {% if p.skills_needed %}<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">{% for s in p.skills_needed[:4] %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>{% endif %}
+            </div>
+            {% else %}
+            <div class="empty"><div class="empty-icon">🔍</div><div class="empty-ttl">No open posts yet</div></div>
+            {% endfor %}
+          </div>
+          <div class="card">
+            <div class="card-hdr"><div class="card-ttl">My Status</div></div>
+            {% for a in my_applications[:5] %}
+            <div style="padding:12px 0;border-bottom:1px solid var(--mist);">
+              <div style="font-size:13px;font-weight:600;color:var(--teal);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ a.post_title }}</div>
+              <span class="badge badge-{{ a.status }}">{{ a.status }}</span>
+            </div>
+            {% else %}
+            <div class="empty" style="padding:30px 10px;"><div class="empty-icon" style="font-size:32px;">📨</div><div class="empty-ttl" style="font-size:14px;">No applications</div><div class="empty-sub">Browse posts and apply</div></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- BROWSE -->
+      <div class="page-view" id="page-browse">
+        <div class="card">
+          <div class="card-hdr"><div><div class="card-ttl">Browse Opportunities</div><div class="card-sub" id="browse-count">{{ open_posts|length }} open posts</div></div></div>
+          <div class="search-row">
+            <input class="s-input" placeholder="Search by title, skills, company..." id="search-input" oninput="filterBrowse()">
+          </div>
+          <div id="browse-list">
+            {% for p in open_posts %}
+            <div class="opp-card" data-title="{{ p.title|lower }}" data-skills="{{ p.skills_needed|join(' ')|lower if p.skills_needed else '' }}" data-founder="{{ p.founder_name|lower }} {{ p.founder_company|lower if p.founder_company else '' }}">
+              <div class="opp-founder">
+                <div class="f-av">{{ p.founder_name[0]|upper }}</div>
+                <div><div class="f-nm">{{ p.founder_name }}</div><div class="f-co">{{ p.founder_company or 'Startup' }}</div></div>
+                <div style="margin-left:auto;font-size:11px;color:var(--gray);">📅 {{ p.deadline }}</div>
+              </div>
+              <div class="opp-ttl">{{ p.title }}</div>
+              <div class="opp-desc">{{ p.description[:200] }}{% if p.description|length > 200 %}...{% endif %}</div>
+              {% if p.skills_needed %}<div class="skills-row" style="margin-bottom:14px;">{% for s in p.skills_needed %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>{% endif %}
+              <div class="opp-foot">
+                <div class="opp-meta"><span>{{ p.app_count }} applicants</span><span>Due {{ p.deadline }}</span></div>
+                <div class="opp-btns">
+                  <button class="btn btn-ghost btn-sm" onclick="askAiAboutPost('{{ p.title }}','{{ p.founder_name }}','{{ p.founder_company or '' }}','{{ p.skills_needed|join(', ') if p.skills_needed else '' }}')">🤖 Ask AI</button>
+                  {% if p.id in applied_post_ids %}
+                  <button class="btn btn-sm" style="background:rgba(61,139,139,.1);color:var(--teal-mid);" disabled>✓ Applied</button>
+                  {% else %}
+                  <button class="btn btn-primary btn-sm" onclick="openApplyModal({{ p.id }}, '{{ p.title|replace("'","\\'")|e }}', '{{ p.skills_needed|join(', ') if p.skills_needed else '' }}')">Apply Now</button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="empty"><div class="empty-icon">🔍</div><div class="empty-ttl">No open posts</div><div class="empty-sub">Check back soon — founders are posting new opportunities</div></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- MY APPLICATIONS -->
+      <div class="page-view" id="page-applications">
+        <div class="card">
+          <div class="card-hdr"><div><div class="card-ttl">My Applications</div><div class="card-sub">{{ stats.my_applications }} total · {{ stats.accepted }} accepted · {{ stats.pending }} pending</div></div></div>
+          {% for a in my_applications %}
+          <div class="app-card">
+            <div>
+              <div class="app-post-ttl">{{ a.post_title }}</div>
+              <div class="app-post-co">{{ a.founder_name }}{% if a.founder_company %} · {{ a.founder_company }}{% endif %} · Due {{ a.post_deadline }}</div>
+              <div class="app-msg-prev">"{{ a.message[:140] }}{% if a.message|length > 140 %}...{% endif %}"</div>
+              {% if a.highlighted_skills %}<div class="skills-row" style="margin-top:10px;">{% for s in a.highlighted_skills %}<span class="skill-tag">{{ s }}</span>{% endfor %}</div>{% endif %}
+            </div>
+            <div style="text-align:right;">
+              <span class="badge badge-{{ a.status }}" style="display:block;text-align:center;margin-bottom:10px;">{{ a.status }}</span>
+              <div style="font-size:11px;color:var(--gray);margin-bottom:10px;">{{ a.created_at[:10] }}</div>
+              {% if a.status == 'accepted' %}<a href="/messages/{{ a.founder_id }}" class="btn btn-ghost btn-sm">💬 Message</a>{% endif %}
+              {% if a.status == 'pending' %}
+              <form method="POST" action="/specialist/withdraw/{{ a.id }}" onsubmit="return confirm('Withdraw this application?')" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm btn-xs">Withdraw</button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+          {% else %}
+          <div class="empty"><div class="empty-icon">📨</div><div class="empty-ttl">No applications yet</div><div class="empty-sub">Browse posts and click "Apply Now" to get started</div></div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="page-view" id="page-messages">
+        <div class="card-ttl" style="margin-bottom:16px;">Messages</div>
+        {% if conversations %}
+        <div class="msg-layout">
+          <div class="msg-convs">
+            <div class="msg-conv-hdr">Conversations</div>
+            {% for c in conversations %}
+            <a href="/messages/{{ c.partner_id }}" style="text-decoration:none;">
+              <div class="conv-item">
+                <div class="conv-av">{{ c.partner_name[0]|upper }}</div>
+                <div style="flex:1;min-width:0;"><div class="conv-nm">{{ c.partner_name }}</div><div class="conv-prev">{{ c.last_message or '' }}</div></div>
+                {% if c.unread_count and c.unread_count > 0 %}<div class="unread-dot"></div>{% endif %}
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:14px;font-weight:300;padding:40px;">Select a conversation to open it</div>
+        </div>
+        {% else %}
+        <div class="card"><div class="empty"><div class="empty-icon">💬</div><div class="empty-ttl">No conversations yet</div><div class="empty-sub">When a founder accepts your application, message them here</div></div></div>
+        {% endif %}
+      </div>
+
+      <!-- PROFILE -->
+      <div class="page-view" id="page-profile">
+        <div class="card">
+          <div class="card-ttl" style="margin-bottom:24px;">Profile Settings</div>
+          <form method="POST" action="/profile/update" enctype="multipart/form-data">
+            <div class="profile-grid">
+              <div>
+                <div class="p-av-big">{{ user.name[0]|upper }}</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--teal);">{{ user.name }}</div>
+                <div style="font-size:12px;color:var(--sage-dark);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;">Specialist</div>
+                <div style="font-size:12px;color:var(--gray);margin-top:6px;">{{ user.email }}</div>
+              </div>
+              <div>
+                <div class="form-group"><label class="form-group label">Full Name</label><input name="name" type="text" class="form-control" value="{{ user.name }}"></div>
+                <div class="form-group"><label class="form-group label">Skills (comma-separated)</label><input name="skills" type="text" class="form-control" value="{{ user.skills|join(', ') if user.skills else '' }}" placeholder="React, Node.js, UI Design..."></div>
+                <div class="form-group"><label class="form-group label">Bio / Portfolio Summary</label><textarea name="bio" class="form-control" style="min-height:100px;">{{ user.bio or '' }}</textarea></div>
+                <div class="form-group"><label class="form-group label">Update CV/Portfolio</label><input name="cv" type="file" class="form-control" style="padding:8px 16px;" accept=".pdf,.zip,.doc,.docx"></div>
+                <div class="form-group"><label class="form-group label">Update Profile Photo</label><input name="avatar" type="file" class="form-control" style="padding:8px 16px;" accept="image/*"></div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- APPLY MODAL -->
+<div class="modal-ov" id="applyModal">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">Apply to Post</div><button class="modal-close" onclick="closeModal('applyModal')">✕</button></div>
+    <div id="apply-post-info" style="margin-bottom:22px;"></div>
+    <form method="POST" id="applyForm" action="" enctype="multipart/form-data">
+      <div class="form-group"><label class="form-group label">Your Application Message *</label><textarea name="message" class="form-control" placeholder="Tell the founder why you're the perfect fit. Mention relevant experience, similar projects, and your approach to this project..." required style="min-height:130px;"></textarea></div>
+      <div class="form-group"><label class="form-group label">Highlight Your Top Skills</label><input name="skills" type="text" class="form-control" id="apply-skills-input" placeholder="React, 5 years experience, UI Design..."></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;">Submit Application →</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block ai_widget %}
+<button id="ai-toggle" title="EquiSwap AI Assistant">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l4.94-1.38C8.42 21.5 10.15 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+</button>
+<div id="ai-panel">
+  <div class="ai-header">
+    <div class="ai-avatar">🤖</div>
+    <div class="ai-header-text"><div class="ai-nm">EquiSwap AI</div><div class="ai-status">Your career assistant</div></div>
+    <div class="ai-header-btns">
+      <button class="ai-hbtn" onclick="clearAiChat()" title="Clear">🗑</button>
+      <button class="ai-hbtn" onclick="document.getElementById('ai-panel').classList.remove('open')">✕</button>
+    </div>
+  </div>
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-msg assistant">Hi {{ user.name.split()[0] }}! 👋 I'm your AI assistant. I know about all the open posts on EquiSwap and your applications. Ask me if a founder is worth working with, how to improve your pitch, or anything else!</div>
+  </div>
+  <div class="ai-suggestions">
+    <button class="ai-sug" onclick="sendAiSug(this)">Review my applications</button>
+    <button class="ai-sug" onclick="sendAiSug(this)">Is this founder serious?</button>
+    <button class="ai-sug" onclick="sendAiSug(this)">How to write a great pitch</button>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiInput" placeholder="Ask about founders, posts, your career..." onkeydown="if(event.key==='Enter')sendAiMsg()">
+    <button class="ai-send" onclick="sendAiMsg()">Send</button>
+  </div>
+</div>
+<script>
+document.getElementById('dt').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+document.getElementById('ai-toggle').addEventListener('click',()=>document.getElementById('ai-panel').classList.toggle('open'));
+
+function filterBrowse(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  let vis=0;
+  document.querySelectorAll('.opp-card').forEach(c=>{
+    const match=!q||c.dataset.title.includes(q)||c.dataset.skills.includes(q)||c.dataset.founder.includes(q);
+    c.style.display=match?'':'none';
+    if(match)vis++;
+  });
+  document.getElementById('browse-count').textContent=vis+' posts';
+}
+
+function openApplyModal(pid,title,skills){
+  document.getElementById('applyForm').action='/specialist/apply/'+pid;
+  document.getElementById('apply-skills-input').value=skills;
+  document.getElementById('apply-post-info').innerHTML='<div style="background:var(--mist);padding:14px 16px;border-radius:12px;"><div style="font-size:14px;font-weight:600;color:var(--teal);">'+title+'</div></div>';
+  openModal('applyModal');
+}
+
+function askAiAboutPost(title,founderName,company,skills){
+  document.getElementById('aiInput').value='Is "'+title+'" by '+founderName+(company?' ('+company+')':'')+' a good opportunity for me? It requires: '+skills;
+  document.getElementById('ai-panel').classList.add('open');
+  sendAiMsg();
+}
+
+fetch('/api/ai/history').then(r=>r.json()).then(hist=>{
+  if(hist.length>1){
+    const box=document.getElementById('aiMessages');box.innerHTML='';
+    hist.forEach(m=>{const d=document.createElement('div');d.className='ai-msg '+m.role;d.innerHTML=formatAiMsg(m.content);box.appendChild(d);});
+    box.scrollTop=box.scrollHeight;
+  }
+});
+
+function formatAiMsg(txt){return txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/<li>/,'<ul><li>').replace(/(<\/li>)(?!<li>)/,'$1</ul>').replace(/\n/g,'<br>');}
+function addAiMsg(role,content){const box=document.getElementById('aiMessages');const d=document.createElement('div');d.className='ai-msg '+role;d.innerHTML=formatAiMsg(content);box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+function sendAiMsg(){
+  const input=document.getElementById('aiInput');const msg=input.value.trim();if(!msg)return;input.value='';
+  addAiMsg('user',msg);document.getElementById('ai-panel').classList.add('open');
+  const t=addAiMsg('assistant','<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>');
+  fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})
+    .then(r=>r.json()).then(data=>{t.innerHTML=formatAiMsg(data.response||data.error||'Error');const box=document.getElementById('aiMessages');box.scrollTop=box.scrollHeight;})
+    .catch(()=>{t.innerHTML='Connection error.';});
+}
+function sendAiSug(btn){document.getElementById('aiInput').value=btn.textContent;document.getElementById('ai-panel').classList.add('open');sendAiMsg();}
+function clearAiChat(){fetch('/api/ai/clear',{method:'POST'}).then(()=>{document.getElementById('aiMessages').innerHTML='<div class="ai-msg assistant">Chat cleared! How can I help?</div>';});}
+</script>
+{% endblock %}
